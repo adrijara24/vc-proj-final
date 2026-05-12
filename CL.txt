@@ -1,0 +1,4 @@
+- HoG extractHOGFeatures | Como las matrículas son rectangulares, las direcciones son muy obvias y facilmente reconocibles
+- Vertice / POI | Si podemos aislar los 4 vertices, nos puede ser útil. Igual buscando los vértices tal que las distancias entre los vértices den un área rectangular. No se si entre distintos tipos de matrículas, la proporcion v:h es distinta.
+- Alto contraste | Todas las matrículas tienen la particularidad que el fondo y las letras suelen tener mucho contraste para ser fácilmente diferenciables
+- Histograma de color? | Preguntar a Manel, si solo son matrículas europeas, se puede hacer, pero si incluyen múltiples países o excepciones como matrícula de los taxis (azul/blanco) no sería útil.

@@ -1,5 +1,5 @@
-def getPlate(data, ogImage):
-    image, ROIs = data
+def getPlateString(image):
+    image, ROIs = image
     def getCharacter(ch):
         return 'A'
     
@@ -7,3 +7,8 @@ def getPlate(data, ogImage):
     for c in ROIs:
         plate += getCharacter(c) + ' '
     return plate
+
+def separateCharacters(image) -> list:
+    characters = []
+
+    return characters
