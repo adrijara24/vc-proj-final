@@ -1,4 +1,96 @@
+
+-------------------------------------------
+Candidatos a Descriptores
+-------------------------------------------
+
 - HoG extractHOGFeatures | Como las matrículas son rectangulares, las direcciones son muy obvias y facilmente reconocibles
 - Vertice / POI | Si podemos aislar los 4 vertices, nos puede ser útil. Igual buscando los vértices tal que las distancias entre los vértices den un área rectangular. No se si entre distintos tipos de matrículas, la proporcion v:h es distinta.
 - Alto contraste | Todas las matrículas tienen la particularidad que el fondo y las letras suelen tener mucho contraste para ser fácilmente diferenciables
 - Histograma de color? | Preguntar a Manel, si solo son matrículas europeas, se puede hacer, pero si incluyen múltiples países o excepciones como matrícula de los taxis (azul/blanco) no sería útil.
+
+
+--------------------------------------------------
+Pipeline propuesto para Detección de matrículas
+--------------------------------------------------
+
+
+------------------------------------------------------------
+1. Imagen de entrada
+------------------------------------------------------------
+
+Entrada:
+- Imagen RGB outdoor.
+
+Pasos:
+1. Conversión a escala de grises ?
+2. Suavizado ligero (Gaussian/Bilateral filter) ?
+
+
+------------------------------------------------------------
+2. Detección estructural mediante Harris
+------------------------------------------------------------
+
+Aplicar Harris Corner Detector para obtener una métrica de respuesta R(x,y).
+
+Hipótesis:
+- Las matrículas contienen muchas transiciones de intensidad:
+    - esquinas de caracteres,
+    - esquinas del marco,
+    - patrones de alto contraste.
+- Esto genera alta concentración de corners.
+
+se pretende:
+- usar la densidad/distribución de corners como detector estructural.
+
+------------------------------------------------------------
+3. Filtrado del mapa Harris
+------------------------------------------------------------
+
+Aplicar threshold sobre la métrica Harris:
+
+    BW = R > alpha * max(R(:))
+
+donde:
+- alpha es un umbral experimental.
+
+------------------------------------------------------------
+4. Extracción de ROIs candidatas
+------------------------------------------------------------
+
+Para cada vertice generar ROIS de diferentes medidas como candidatas a ser matrícula
+
+
+------------------------------------------------------------
+5. Extracción de descriptores
+------------------------------------------------------------
+
+Descriptor principal:
+- HOG (Histogram of Oriented Gradients)
+- etc
+
+Motivación:
+- las matrículas contienen gran densidad de bordes verticales,
+- estructura regular,
+- caracteres alineados horizontalmente.
+
+
+------------------------------------------------------------
+6. Clasificación
+------------------------------------------------------------
+
+Usar clasificador binario:
+
+    plate / non-plate
+
+
+Pipeline:
+
+    ROI -> HOG -> SVM -> decisión
+
+Si:
+    ROI == plate
+
+Entonces:
+    la Bounding Box asociada se considera detección válida.
+
+
