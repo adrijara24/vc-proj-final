@@ -9,10 +9,24 @@ Candidatos a Descriptores
 - Histograma de color? | Preguntar a Manel, si solo son matrículas europeas, se puede hacer, pero si incluyen múltiples países o excepciones como matrícula de los taxis (azul/blanco) no sería útil.
 
 
+-------------------------------------
+Posible Preguntas Profe: 
+-------------------------------------
+
+-Preguntar sobre el orden del pipeline (como el de abajo):
+    - Imagen entrada - deteccion vertices (harris) - generar posibles ROIS (de diferentes tamaños) - extraer features de esa ROI - pasar a clasificador ???
+
+-Pregunta sobre los keypoints como SIFT (no entiendo si se pueden aplicar a nuestra practica porque necesitariamos una imagen modelo
+y todas las matriculas tienen numeros diferentes, por lo que los puntos de interes serian diferentes)
+
+-Preguntar sobre si los detectores elegidos son buenos (o si son demasiados)
+
+-Si al final si que es útil usar Harris -> problema que tiene: salen muchos vertices. Deberiamos filtrarlos con un threshold?
+
+
 --------------------------------------------------
 Pipeline propuesto para Detección de matrículas
 --------------------------------------------------
-
 
 ------------------------------------------------------------
 1. Imagen de entrada
@@ -92,5 +106,7 @@ Si:
 
 Entonces:
     la Bounding Box asociada se considera detección válida.
+
+
 
 
