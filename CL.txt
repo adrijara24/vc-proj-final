@@ -43,7 +43,7 @@ se pretende:
 - usar la densidad/distribución de corners como detector estructural.
 
 ------------------------------------------------------------
-3. Filtrado del mapa Harris
+3. Filtrado del mapa Harris ????
 ------------------------------------------------------------
 
 Aplicar threshold sobre la métrica Harris:
