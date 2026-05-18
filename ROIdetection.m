@@ -36,7 +36,7 @@ function candidates = getCandidates(im)
 
         areaRatio = S(k).Area / area;
 
-        isWide = (ar > 1.4) && (ar <= 12);
+        isWide = (ar > 1.7) && (ar <= 12);
         isRect = S(k).Extent >= 0.25;
         isReasonable = (areaRatio > 0.0005) & (areaRatio <= 0.25);
         if isWide && isRect && isReasonable
@@ -45,7 +45,11 @@ function candidates = getCandidates(im)
     end
 end
 
-im = imread('test_013.jpg');
+function image = cutImage(im, ROI)
+    image = imcrop(im, ROI);
+end
+
+im = imread('test_014.jpg');
 candidates = getCandidates(im);
 
 figure, imshow(im), title('Candidates');
@@ -56,3 +60,14 @@ for i = 1:size(candidates, 1)
 end
 
 hold off;
+
+%ROIs = []
+for i = 1:size(candidates, 1)
+    crop = cutImage(im, candidates(i, :));
+    figure, imshow(crop), title('cropped image');
+    %ROIs = [ROIs; crop]
+end
+%clas = load('model.mat');
+%[labels, scores] = classify(clas, ROIs);
+
+%disp(table(labels, max(scores,[], 2), 'VariableTypes', {'Class', 'Confidence'}));
