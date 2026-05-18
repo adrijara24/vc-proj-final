@@ -12,7 +12,8 @@ function candidates = getCandidates(im)
     bw = bwareaopen(bw, round(0.001 * area));
     figure, imshow(bw), title('binarized area open image');
 
-    EE = strel('rectangle', [5, 30]);
+    %EE = strel('rectangle', [5, 30]);
+    EE = strel('rectangle', [5, 15]);
     cl = imclose(bw, EE);
     figure, imshow(cl), title('close');
     
