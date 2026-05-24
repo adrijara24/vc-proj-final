@@ -1,0 +1,57 @@
+
+Modelo 1: Solo HOG como feature
+
+	Resultados: 
+
+		Accuracy 98.43%
+		Confusion Matrix:
+		
+			- TN = 420
+			- TP = 80
+			- FN = 6
+			- FP = 2
+
+
+Modelo 2: HOG y aspecto ratio como features
+
+	Resultados: 
+	
+		Accuracy = 98.43%
+		Confusion Matrix:
+
+			- TN = 420
+			- TP = 80
+			- FN = 6
+			- FP = 2
+
+
+Modelo 3: HOG y num connected components
+
+	Resultados: 
+	
+		Accuracy = 98.43%
+		Confusion Matrix:
+
+			- TN = 420
+			- TP = 80
+			- FN = 6
+			- FP = 2
+
+
+Modelo 4: HOG num connected components y aspecto ratio
+
+	Resultados: 
+	
+		Accuracy = 98.43%
+		Confusion Matrix:
+
+			- TN = 420
+			- TP = 80
+			- FN = 6
+			- FP = 2
+
+
+Conclusión: con la misma semilla (train y test) añadir más features al modelo 1 ni mejora ni empeora. Teoría: como los hog son 3000 features approx y los demás es solo 1 valor, este no afecta ya que predomina el hog
+
+
+
