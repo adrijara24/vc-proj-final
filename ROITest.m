@@ -4,22 +4,6 @@ function image = cutImage(im, ROI)
     image = imcrop(im, ROI);
 end
 
-% function corners = getCorners(im)
-%     if size(im, 3) == 3
-%         im = rgb2gray(im);
-%     end
-% 
-%     im = imadjust(im);
-%     bw = edge(im, 'sobel');
-%     EE1 = strel('rectangle', [3 15]);
-%     EE2 = strel('rectangle', [2 2]);
-%     bw = imclose(bw, EE1);
-%     bw = imfill(bw, 'holes');
-%     bw = imopen(bw, EE2);
-%     figure, imshow(bw), title('bw');
-%     corners = [];
-% end
-
 showSteps = false;
 showResult = true;
 showRois = true;
@@ -47,37 +31,59 @@ for k = 1:numel(images)
     candidates = joinDuplicates(candidates, 0.70);
 
     [~, name] = fileparts(images(k));
-    figure, imshow(im), title(name);
+    %figure, imshow(im), title(name);
+    %hold on;
+
+    %if showResult
+        % for i = 1:size(candidates, 1)
+        %     rectangle('Position', candidates(i, :), 'EdgeColor', 'g', 'LineWidth', 2);
+        % end
+    %end
+
+    %hold off;
+    
+    og = figure('Name', name);
+    imshow(im), title(name);
     hold on;
-    
-    if showResult
-        for i = 1:size(candidates, 1)
-            rectangle('Position', candidates(i, :), 'EdgeColor', 'g', 'LineWidth', 2);
-        end
-    end
-    
-    hold off;
-    
-    %ROIs = []
     for i = 1:size(candidates, 1)
         crop = cutImage(im, candidates(i, :));
-        aligned = alignPlate(crop);
+        plate = [];
+
+        % Descartamos ROIs que no sean matrículas con el clasificador
+        if true
+            plate = crop;
+        else
+            continue
+        end
+
+        % Alineación y segmentación
+        [aligned, BB] = alignPlate(plate, candidates(i, :));
         blobs = segm(aligned);
         if size(blobs,1) <= 3
-            aligned = alignPlate(255-crop);
+            [aligned, BB] = alignPlate(255-plate, candidates(i, :));
             blobs = segm(aligned);
         end
-        if showRois && size(blobs, 1) > 3
-            figure, imshow(aligned), title('cropped image');
-            hold on;
-            for j = 1:size(blobs, 1)
-                bb = blobs(j, :);
-                rectangle('Position', bb, 'EdgeColor', 'r', 'LineWidth', 2);
-                text(bb(1), bb(2), num2str(j),"FontSize",14, "FontWeight", "bold", "Color","r","HorizontalAlignment","center", "VerticalAlignment","bottom");
+        if ~isempty(BB) && size(blobs, 1) > 3
+            % Mostrar la ROI acotada de la matrícula.
+            figure(og);
+            x_pl = [BB(:, 1); BB(1, 1)];
+            y_pl = [BB(:, 2); BB(1, 2)];
+            line(x_pl, y_pl, 'Color', 'r', 'LineWidth', 2.5);
+
+            % Mostrar los carácteres segmentados con ordenación
+            if showRois
+                figure, imshow(aligned), title('cropped image');
+                hold on;
+                for j = 1:size(blobs, 1)
+                    bb = blobs(j, :);
+                    rectangle('Position', bb, 'EdgeColor', 'r', 'LineWidth', 2);
+                    text(bb(1), bb(2), num2str(j),"FontSize",14, "FontWeight", "bold", "Color","r","HorizontalAlignment","center", "VerticalAlignment","bottom");
+                end
+                hold off;
             end
-            hold off;
-           % getCorners(crop);
         end
         %ROIs = [ROIs; crop]
     end
+    figure(og);
+    hold off;
 end

@@ -3,8 +3,13 @@ function chars = segm(im)
         im = rgb2gray(im);
     end
     bw = imadjust(im);
-    bw = ~imbinarize(bw, 'adaptive', 'Sensitivity',0.6);
-    bw = imclearborder(bw);
+    bw = ~imbinarize(bw, 'adaptive', 'Sensitivity',0.7);
+    %bw = imclearborder(bw);
+    %figure, imshow(bw);
+    % [szy, szx] = size(bw);
+    % EE = strel('rectangle', [1, round(szx * 0.3)]);
+    % bord = imopen(bw, EE);
+    % bw = bw & ~bord;
     bw = bwareaopen(bw, 50);
     %bw = bwareaopen(bw, 500,4);
     %blobs = watershed(bw, 8);
@@ -16,7 +21,7 @@ function chars = segm(im)
     for k = 1:numel(S)
         bb = S(k).BoundingBox;
         ar = bb(3) / bb(4);
-        if ar < 0.8 && ar > 0.2
+        if ar < 0.8 && ar > 0.1
             blobs = [blobs; [bb(1), bb(2), bb(3), bb(4)]];
         end
     end
