@@ -36,6 +36,7 @@ function kept = nms(candidates, scores, iouThresh, containThresh)
     kept = boxes(keep, :);
 end
 
+
 function [iou, r1, r2] = getOverlap(A, B)
     x1 = max(A(1), B(1));
     y1 = max(A(2), B(2));
@@ -50,7 +51,7 @@ function [iou, r1, r2] = getOverlap(A, B)
     aB = B(3) * B(4);
     union = aA + aB - intersection;
 
-    iou = intersection / union;   % Jaccard / IoU clásico
+    iou = intersection / union; 
     r1  = intersection / aA;      % Fracción de A cubierta por B
     r2  = intersection / aB;      % Fracción de B cubierta por A
 end
