@@ -80,7 +80,7 @@ Ytest = labels(test(cv));
 fprintf('Training SVM...\n');
 
 model = fitcsvm(Xtrain, Ytrain, 'KernelFunction', 'linear', ...
-    'Standardize', true, 'ClassNames', [0 1]);
+    'Standardize', true, 'ClassNames', [0 1], 'KernelScale','auto');
 
 fprintf('Model trained\n');
 

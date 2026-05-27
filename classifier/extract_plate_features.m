@@ -7,11 +7,11 @@ function features = extract_plate_features(img, imageSize)
         img = rgb2gray(img);
     end
 
-    % Aspect Ratio
+    % Aspect and Area Ratio
 
-    %[h, w] = size(img);
-
-    %aspectRatio = w / h;
+    [h, w] = size(img);
+    aspectRatio = w / h;
+    areaRatio = (h * w);
 
     % Connected components
 
@@ -22,13 +22,12 @@ function features = extract_plate_features(img, imageSize)
     % Resize
     
     img = imresize(img, imageSize);
-    img = im2double(img);
-    img = im2uint8(img);
+    img = im2uint8(im2double(img));
    
     % HOG FEATURES
     
     hog_feature = extractHOGFeatures(img,'CellSize', [8 8]);
 
-    features = hog_feature;
+    features = [hog_feature, aspectRatio, areaRatio] ;
 
 end
