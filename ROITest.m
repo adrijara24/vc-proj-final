@@ -91,7 +91,7 @@ for k = 1:numel(images)
 
     %hold off;
 
-   
+
     % Procesamiento de cada ROI detectada (candidatos)
   
     for i = 1:size(candidates, 1)
