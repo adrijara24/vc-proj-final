@@ -132,7 +132,7 @@ for k = 1:numel(images)
 
         
             % Visualización de segmentación de caracteres
-
+            
             if size(blobs, 1) > 3
 
                 if showRois
@@ -168,5 +168,4 @@ for k = 1:numel(images)
     % Finalización de visualización de la imagen actual
     figure(og);
     hold off;
-    
 end
