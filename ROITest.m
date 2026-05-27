@@ -14,7 +14,7 @@ showSteps = false;      % Muestra pasos intermedios del detector de ROIs
 %showResult = false;      % Activa visualización de resultados globales
 showSegments = true;        % Muestra segmentación de caracteres dentro de la ROI
 
-loadDataset = true;    % true -> carga automáticamente dataset completo
+loadDataset = false;    % true -> carga automáticamente dataset completo
                         % false -> usa lista manual de imágenes
 
 % Ruta del dataset
@@ -33,7 +33,7 @@ datasetPath = fullfile(pwd, 'Datasets', 'Dataset');
 %images = ["test_091.jpg","test_096.jpg","test_079.jpg","test_078.jpg","test_063.jpg","test_071.jpg","test_056.jpg","test_044.jpg","test_029.jpg"];
 %images = ["test_092.jpg","test_071.jpg","test_073.jpg","test_061.jpg","test_057.jpg","test_060.jpg","test_048.jpg","test_046.jpg","test_023.jpg","test_017.jpg","test_015.jpg","test_010.jpg","eu8.jpg","eu4.jpg","eu11.jpg",];
 
-%images = ["test_071.jpg","test_070.jpg","test_062.jpg","test_061.jpg","test_058.jpg","test_043.jpg","test_042.jpg","test_039.jpg","test_034.jpg","test_013.jpg"];
+images = ["test_071.jpg","test_070.jpg","test_062.jpg","test_061.jpg","test_058.jpg","test_043.jpg","test_042.jpg","test_039.jpg","test_034.jpg","test_013.jpg"];
 
 %images = ["test_095.jpg"];
 
@@ -95,7 +95,7 @@ for k = 1:numel(images)
     imshow(im), title(name);
     hold on;
     
-    % FASE 2: ALINEACIÓN Y SEGMENTACIÓN (solo sobre supervivientes del NMS)
+    % FASE 2: ALINEACIÓN Y SEGMENTACIÓN
     for i = 1:size(candidates, 1)
         plate = cutImage(im, candidates(i,:));
     
