@@ -22,6 +22,8 @@ function features = extract_plate_features(img, imageSize)
     % Resize
     
     img = imresize(img, imageSize);
+    img = im2double(img);
+    img = im2uint8(img);
    
     % HOG FEATURES
     
