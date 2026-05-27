@@ -11,7 +11,7 @@ end
 % Flags para controlar la visualización y ejecución del sistema
 
 showSteps = false;      % Muestra pasos intermedios del detector de ROIs
-showResult = true;      % Activa visualización de resultados globales
+%showResult = false;      % Activa visualización de resultados globales
 showRois = true;        % Muestra segmentación de caracteres dentro de la ROI
 
 loadDataset = false;    % true -> carga automáticamente dataset completo
@@ -39,6 +39,8 @@ datasetPath = fullfile(pwd, 'Datasets', 'Dataset');
 %images = ["test_092.jpg","test_071.jpg","test_073.jpg","test_061.jpg","test_057.jpg","test_060.jpg","test_048.jpg","test_046.jpg","test_023.jpg","test_017.jpg","test_015.jpg","test_010.jpg","eu8.jpg","eu4.jpg","eu11.jpg",];
 
 images = ["test_071.jpg","test_070.jpg","test_062.jpg","test_061.jpg","test_058.jpg","test_043.jpg","test_042.jpg","test_039.jpg","test_034.jpg","test_013.jpg"];
+
+%images = ["test_095.jpg"];
 
 % Alternativa: dataset 2 de vehículos 
 %images = ["Cars0.png", "Cars1.png", "Cars2.png"];
@@ -86,6 +88,14 @@ for k = 1:numel(images)
     imshow(im), title(name);
     hold on;
 
+     if showSteps
+         for i = 1:size(candidates, 1)
+             rectangle('Position', candidates(i, :), 'EdgeColor', 'g', 'LineWidth', 2);
+         end
+     end
+
+    %hold off;
+
    
     % Procesamiento de cada ROI detectada (candidatos)
   
@@ -118,9 +128,11 @@ for k = 1:numel(images)
             blobs = segm(aligned);
         end
 
+        
+        % Visualización
+
         if ~isempty(BB)
 
-          
             % Visualización matrícula detectada
           
             figure(og);
@@ -132,7 +144,7 @@ for k = 1:numel(images)
 
         
             % Visualización de segmentación de caracteres
-            
+
             if size(blobs, 1) > 3
 
                 if showRois
@@ -168,4 +180,5 @@ for k = 1:numel(images)
     % Finalización de visualización de la imagen actual
     figure(og);
     hold off;
+    
 end
