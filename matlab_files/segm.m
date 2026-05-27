@@ -2,15 +2,17 @@ function chars = segm(im)
     if size(im, 3) == 3
         im = rgb2gray(im);
     end
+    bw = im;
     bw = imadjust(im);
-    bw = ~imbinarize(bw, 'adaptive', 'Sensitivity',0.7);
+    bw = ~imbinarize(bw, 'adaptive', 'Sensitivity',0.6);
+    %bw = ~imbinarize(bw, 'adaptive', 'ForegroundPolarity','dark','Sensitivity', 0.45);
     %bw = imclearborder(bw);
     %figure, imshow(bw);
     % [szy, szx] = size(bw);
     % EE = strel('rectangle', [1, round(szx * 0.3)]);
     % bord = imopen(bw, EE);
     % bw = bw & ~bord;
-    bw = bwareaopen(bw, 50);
+    bw = bwareaopen(bw, 25);
     %bw = bwareaopen(bw, 500,4);
     %blobs = watershed(bw, 8);
     %disp(max(max(blobs)));
@@ -30,5 +32,5 @@ function chars = segm(im)
     else
         chars = [];
     end
-    
+    %figure, imshow(bw);
 end

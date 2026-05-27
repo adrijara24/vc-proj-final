@@ -18,7 +18,7 @@ loadDataset = false;        % true para cargar todo el contenido de la carpeta D
 images = ["test_049.jpg","test_019.jpg","test_015.jpg","eu8.jpg","eu4.jpg"];
 %images = ["test_091.jpg","test_096.jpg","test_079.jpg","test_078.jpg","test_063.jpg","test_071.jpg","test_056.jpg","test_044.jpg","test_029.jpg"];
 %images = ["test_092.jpg","test_071.jpg","test_073.jpg","test_061.jpg","test_057.jpg","test_060.jpg","test_048.jpg","test_046.jpg","test_023.jpg","test_017.jpg","test_015.jpg","test_010.jpg","eu8.jpg","eu4.jpg","eu11.jpg",];
-
+images = ["test_071.jpg","test_070.jpg","test_062.jpg","test_061.jpg","test_058.jpg","test_043.jpg","test_042.jpg","test_039.jpg","test_034.jpg","test_013.jpg"];
 if loadDataset
     images = [];
     data = dir(fullfile(pwd, 'Dataset', '*.jpg'));
@@ -50,7 +50,8 @@ for k = 1:numel(images)
         plate = [];
 
         % Descartamos ROIs que no sean matrículas con el clasificador
-        if true
+        [isPlate, score] = classify_roi(crop);
+        if isPlate
             plate = crop;
         else
             continue
@@ -63,23 +64,24 @@ for k = 1:numel(images)
             [aligned, BB] = alignPlate(255-plate, candidates(i, :));
             blobs = segm(aligned);
         end
-        if ~isempty(BB) && size(blobs, 1) > 3
+        if ~isempty(BB)
             % Mostrar la ROI acotada de la matrícula.
             figure(og);
             x_pl = [BB(:, 1); BB(1, 1)];
             y_pl = [BB(:, 2); BB(1, 2)];
             line(x_pl, y_pl, 'Color', 'r', 'LineWidth', 2.5);
-
-            % Mostrar los carácteres segmentados con ordenación
-            if showRois
-                figure, imshow(aligned), title('cropped image');
-                hold on;
-                for j = 1:size(blobs, 1)
-                    bb = blobs(j, :);
-                    rectangle('Position', bb, 'EdgeColor', 'r', 'LineWidth', 2);
-                    text(bb(1), bb(2), num2str(j),"FontSize",14, "FontWeight", "bold", "Color","r","HorizontalAlignment","center", "VerticalAlignment","bottom");
+            if size(blobs, 1) > 3
+                % Mostrar los carácteres segmentados con ordenación
+                if showRois
+                    figure, imshow(aligned), title('cropped image');
+                    hold on;
+                    for j = 1:size(blobs, 1)
+                        bb = blobs(j, :);
+                        rectangle('Position', bb, 'EdgeColor', 'r', 'LineWidth', 2);
+                        text(bb(1), bb(2), num2str(j),"FontSize",14, "FontWeight", "bold", "Color","r","HorizontalAlignment","center", "VerticalAlignment","bottom");
+                    end
+                    hold off;
                 end
-                hold off;
             end
         end
         %ROIs = [ROIs; crop]
