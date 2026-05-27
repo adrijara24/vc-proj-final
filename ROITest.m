@@ -86,6 +86,14 @@ for k = 1:numel(images)
     imshow(im), title(name);
     hold on;
 
+     %if showResult
+        % for i = 1:size(candidates, 1)
+        %     rectangle('Position', candidates(i, :), 'EdgeColor', 'g', 'LineWidth', 2);
+        % end
+    %end
+
+    %hold off;
+
    
     % Procesamiento de cada ROI detectada (candidatos)
   
@@ -118,9 +126,11 @@ for k = 1:numel(images)
             blobs = segm(aligned);
         end
 
+        
+        % Visualización
+
         if ~isempty(BB)
 
-          
             % Visualización matrícula detectada
           
             figure(og);
