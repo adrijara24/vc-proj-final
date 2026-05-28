@@ -3,7 +3,9 @@ function chars = segm(im)
     if size(im, 3) == 3
         im = rgb2gray(im);
     end
-  
+
+    %im = imadjust(im)
+    
     bw = ~imbinarize(im, 'adaptive', 'ForegroundPolarity', 'dark', 'Sensitivity', 0.5);
 
     bw = imclearborder(bw); % Elimina objetos tocando los bordes
