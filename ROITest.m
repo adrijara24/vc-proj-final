@@ -14,7 +14,7 @@ showSteps = false;      % Muestra pasos intermedios del detector de ROIs
 %showResult = false;      % Activa visualización de resultados globales
 showSegments = true;        % Muestra segmentación de caracteres dentro de la ROI
 
-loadDataset = true;    % true -> carga automáticamente dataset completo
+loadDataset = false;    % true -> carga automáticamente dataset completo
                         % false -> usa lista manual de imágenes
 
 % Ruta del dataset
