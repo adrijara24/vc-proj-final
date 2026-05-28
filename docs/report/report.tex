@@ -1,0 +1,124 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage{fix-cm}
+
+\usepackage[utf8]{inputenc}  % Character encoding
+\usepackage[spanish]{babel}  % Language set to Spanish
+\addto\extraspanish{\spanishdecimal{.}}
+\usepackage{amsmath, amssymb}  % Mathematical packages
+\usepackage{graphicx}  % For including images
+\usepackage{fancyhdr}  % Package for customizing headers and footers
+\usepackage[hidelinks]{hyperref}  % For links and references
+\usepackage{lipsum}  % For generating test text
+\usepackage{geometry}  % For defining margins and document geometry
+\usepackage{tocloft}  % For customizing the table of contents
+\usepackage{booktabs}  % For better looking tables
+\usepackage{listings}  % For displaying code
+\usepackage{algorithm}  % For algorithm environments
+\usepackage{algpseudocode}  % For pseudocode
+\usepackage{array}  % For custom column specifiers in tables
+\usepackage{tabularx}  % For tables that occupy the full document width
+\usepackage{caption}  % For using \captionof
+\usepackage{enumitem}
+\usepackage{alltt}
+\usepackage{titlesec}
+\usepackage{algorithmicx}
+\usepackage{tikz}
+\usepackage{subcaption}
+
+\usepackage{fancyvrb}
+\usepackage{xcolor}
+
+\setcounter{secnumdepth}{4}
+
+\titleformat{\paragraph}
+{\normalfont\normalsize\bfseries}{\theparagraph}{1em}{}
+\titlespacing*{\paragraph}
+{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+
+
+% Margin configuration
+\geometry{left=3cm, right=3cm, top=3cm, bottom=3cm}
+
+\setlength{\parindent}{0pt}
+
+% Command to create new line with spacing
+\newcommand{\spacednewline}{\newline\vspace{0.10cm}}
+
+
+\newcommand{\portada}{
+    \begin{titlepage}
+        \centering
+
+        % Espacio superior para bajar el título
+        \vspace*{4cm}
+
+        % Título
+        {\fontsize{40pt}{40pt}\selectfont \textbf{Detector de}} \\[0.4cm]
+        {\fontsize{40pt}{40pt}\selectfont \textbf{Matrícules}} \\[1.5cm]
+
+        % Universidad y facultad
+        {\fontsize{16pt}{20pt}\selectfont Universitat Politècnica de Catalunya}\\[0.2cm]
+        {\fontsize{16pt}{20pt}\selectfont Facultat d’Informàtica de Barcelona}\\[0.5cm]
+
+        % Asignatura
+        {\fontsize{16pt}{20pt}\selectfont Visió per Computador}\\[0.8cm]
+
+        % Curso
+        {\fontsize{16pt}{20pt}\selectfont 2025-2026 Q2}\\[8cm]
+
+        % Grupo
+        {\large \textbf{VC Grup: 11}}\\[1cm]
+
+        % Integrantes (centrados)
+        {\large
+        Adrià Jara Palos: adria.jara@estudiantat.upc.edu\\[0.2cm]
+        Eric Medina: eric.medina@estudiantat.upc.edu\\[0.2cm]
+        }
+
+    \end{titlepage}
+}
+
+% For automatic table of contents generation
+\setcounter{tocdepth}{4}  % Index depth (sections and subsections)
+
+% Dotted line in table of contents
+\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+
+
+\begin{document}
+
+% Title page without numbering
+\portada
+\thispagestyle{empty}  
+\newpage
+
+
+% table of contents
+\renewcommand{\contentsname}{Índex}
+
+% 1. Quitamos la numeración globalmente para el índice
+\pagestyle{empty}
+
+% 2. Forzamos que la primera página del índice también sea 'empty'
+\addtocontents{toc}{\protect\thispagestyle{empty}}
+
+\tableofcontents
+\clearpage
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[C]{\thepage}
+
+% 4. Reiniciamos el contador a 1 y definimos el formato (esto resetea el contador automáticamente)
+\pagenumbering{arabic}
+
+\input{sections/intro.tex}
+
+\input{sections/projectDescription.tex}
+
+\input{sections/implementation.tex}
+
+
+
+
+\end{document}

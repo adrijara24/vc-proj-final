@@ -7,7 +7,7 @@ function [prediction, score] = classify_roi(img)
     
     if isempty(model)
     
-        data = load('plate_classifier_model.mat');
+        data = load('plate_classifier.mat');
     
         model = data.model;
     

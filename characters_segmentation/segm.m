@@ -1,36 +1,51 @@
 function chars = segm(im)
+   
     if size(im, 3) == 3
         im = rgb2gray(im);
     end
-    bw = im;
-    bw = imadjust(im);
-    bw = ~imbinarize(bw, 'adaptive', 'Sensitivity',0.6);
-    %bw = ~imbinarize(bw, 'adaptive', 'ForegroundPolarity','dark','Sensitivity', 0.45);
-    %bw = imclearborder(bw);
-    %figure, imshow(bw);
-    % [szy, szx] = size(bw);
-    % EE = strel('rectangle', [1, round(szx * 0.3)]);
-    % bord = imopen(bw, EE);
-    % bw = bw & ~bord;
-    bw = bwareaopen(bw, 25);
-    %bw = bwareaopen(bw, 500,4);
-    %blobs = watershed(bw, 8);
-    %disp(max(max(blobs)));
-    CC = bwconncomp(bw);% Substituir per Canny?
-    S = regionprops(CC, 'BoundingBox', 'Area', 'Extent');
 
+    %im = imadjust(im)
+    
+    bw = ~imbinarize(im, 'adaptive', 'ForegroundPolarity', 'dark', 'Sensitivity', 0.5);
+
+    bw = imclearborder(bw); % Elimina objetos tocando los bordes
+    bw = bwareaopen(bw, 40); 
+
+    CC = bwconncomp(bw);
+
+    % Close para conectar numeros como 3, etc
+    se = strel('square', 2); 
+    bw = imclose(bw, se);
+
+    S = regionprops(CC, 'BoundingBox', 'Area', 'Extent');
+    
+    [imgHeight, ~] = size(bw);
     blobs = [];
+
     for k = 1:numel(S)
         bb = S(k).BoundingBox;
-        ar = bb(3) / bb(4);
-        if ar < 0.8 && ar > 0.1
-            blobs = [blobs; [bb(1), bb(2), bb(3), bb(4)]];
+        x = bb(1); 
+        y = bb(2); 
+        w = bb(3); 
+        h = bb(4);
+        
+        ar = w / h; % Aspect Ratio
+
+        cond_ar = (ar > 0.05 && ar < 0.95);
+
+        cond_h = (h > imgHeight * 0.35 && h < imgHeight * 0.95);
+
+        % Extent (Area del objeto / Area del Bounding Box)
+        cond_ext = (S(k).Extent > 0.12 && S(k).Extent < 1.0);
+
+        if cond_ar && cond_h && cond_ext
+            blobs = [blobs; bb];
         end
     end
+
     if ~isempty(blobs)
         chars = sortrows(blobs, 1);
     else
         chars = [];
     end
-    %figure, imshow(bw);
 end

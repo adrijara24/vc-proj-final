@@ -12,7 +12,7 @@ end
 
 showSteps = false;      % Muestra pasos intermedios del detector de ROIs
 %showResult = false;      % Activa visualización de resultados globales
-showRois = true;        % Muestra segmentación de caracteres dentro de la ROI
+showSegments = true;        % Muestra segmentación de caracteres dentro de la ROI
 
 loadDataset = false;    % true -> carga automáticamente dataset completo
                         % false -> usa lista manual de imágenes
@@ -31,14 +31,14 @@ datasetPath = fullfile(pwd, 'Datasets', 'Dataset');
 %images = ["test_073.jpg",];
 %images = ["test_049.jpg","test_019.jpg","test_015.jpg","eu8.jpg","eu4.jpg"];
 %images = ["test_091.jpg","test_096.jpg","test_079.jpg","test_078.jpg","test_063.jpg","test_071.jpg","test_056.jpg","test_044.jpg","test_029.jpg"];
-%images = ["test_092.jpg","test_071.jpg","test_073.jpg","test_061.jpg","test_057.jpg","test_060.jpg","test_048.jpg","test_046.jpg","test_023.jpg","test_017.jpg","test_015.jpg","test_010.jpg","eu8.jpg","eu4.jpg","eu11.jpg",];
+images = ["test_092.jpg","test_071.jpg","test_073.jpg","test_061.jpg","test_057.jpg","test_060.jpg","test_048.jpg","test_046.jpg","test_023.jpg","test_017.jpg","test_015.jpg","test_010.jpg","eu8.jpg","eu4.jpg","eu11.jpg",];
 
-images = ["test_071.jpg","test_070.jpg","test_062.jpg","test_061.jpg","test_058.jpg","test_043.jpg","test_042.jpg","test_039.jpg","test_034.jpg","test_013.jpg"];
+%images = ["test_071.jpg","test_070.jpg","test_062.jpg","test_061.jpg","test_058.jpg","test_043.jpg","test_042.jpg","test_039.jpg","test_034.jpg","test_013.jpg"];
 
-%images = ["test_095.jpg"];
+i%mages = ["eu4.jpg"];
 
 % Alternativa: dataset 2 de vehículos 
-%images = ["Cars0.png", "Cars1.png", "Cars2.png"];
+%images = ["Cars0.png", "Cars1.png", "Cars2.png", "Cars3.png", "Cars4.png", "Cars5.png", "Cars6.png", "Cars7.png", "Cars8.png", "Cars9.png", "Cars10.png", "Cars11.png"];
 
 
 
@@ -71,109 +71,64 @@ for k = 1:numel(images)
 
 
     % FASE 1: DETECCIÓN DE POSIBLES MATRÍCULAS (ROIs)
- 
     candidates = getCandidates(im, showSteps);
-    candidates = joinDuplicates(candidates, 0.70);
-
+    
+    % Clasificar todas las ROIs y recoger scores ANTES del NMS
+    scores = zeros(size(candidates, 1), 1);
+    validMask = false(size(candidates, 1), 1);
+    
+    for i = 1:size(candidates, 1)
+        crop = cutImage(im, candidates(i,:));
+        [isPlate, scores(i)] = classify_roi(crop);
+        validMask(i) = isPlate;
+    end
+    
+    % Quedarse solo con las que el clasificador acepta
+    candidates = candidates(validMask, :);
+    scores = scores(validMask);
+    
+    % NMS sobre las candidatas válidas
+    candidates = nms(candidates, scores, 0.45, 0.75);
+    
     [~, name] = fileparts(images(k));
-
-
-    % Creación de figura principal para visualización
     og = figure('Name', name);
     imshow(im), title(name);
     hold on;
-
-     if showSteps
-         for i = 1:size(candidates, 1)
-             rectangle('Position', candidates(i, :), 'EdgeColor', 'g', 'LineWidth', 2);
-         end
-     end
-
-    %hold off;
-
-
-    % Procesamiento de cada ROI detectada (candidatos)
-  
-    for i = 1:size(candidates, 1)
-
-        % Recorte de la región candidata
-        crop = cutImage(im, candidates(i, :));
-        plate = [];
-
-        
-        % Filtro de clasificación (PLACA / NO PLACA)
-       
-        [isPlate, score] = classify_roi(crop);
-
-        if isPlate
-            plate = crop;
-        else
-            continue
-        end
-
-  
-        % FASE 2: ALINEACIÓN Y SEGMENTACIÓN
     
-        [aligned, BB] = alignPlate(plate, candidates(i, :));
+    % FASE 2: ALINEACIÓN Y SEGMENTACIÓN
+    for i = 1:size(candidates, 1)
+        plate = cutImage(im, candidates(i,:));
+    
+        [aligned, BB] = alignPlate(plate, candidates(i,:));
         blobs = segm(aligned);
-
-        % Caso alternativo si la segmentación falla
         if size(blobs,1) <= 3
-            [aligned, BB] = alignPlate(255-plate, candidates(i, :));
+            [aligned, BB] = alignPlate(255-plate, candidates(i,:));
             blobs = segm(aligned);
         end
-
-        
+    
         % Visualización
-
         if ~isempty(BB)
-
-            % Visualización matrícula detectada
-          
             figure(og);
-
-            x_pl = [BB(:, 1); BB(1, 1)];
-            y_pl = [BB(:, 2); BB(1, 2)];
-
+            x_pl = [BB(:,1); BB(1,1)];
+            y_pl = [BB(:,2); BB(1,2)];
             line(x_pl, y_pl, 'Color', 'r', 'LineWidth', 2.5);
-
-        
-            % Visualización de segmentación de caracteres
-
-            if size(blobs, 1) > 3
-
-                if showRois
-
-                    figure, imshow(aligned), title('cropped image');
-                    hold on;
-
-                    for j = 1:size(blobs, 1)
-
-                        bb = blobs(j, :);
-
-                        rectangle('Position', bb, ...
-                            'EdgeColor', 'r', ...
-                            'LineWidth', 2);
-
-                        text(bb(1), bb(2), num2str(j), ...
-                            "FontSize", 14, ...
-                            "FontWeight", "bold", ...
-                            "Color", "r", ...
-                            "HorizontalAlignment", "center", ...
-                            "VerticalAlignment", "bottom");
-                    end
-
-                    hold off;
+    
+            if size(blobs,1) > 3 && showSegments
+                figure, imshow(aligned), title('cropped image');
+                hold on;
+                for j = 1:size(blobs,1)
+                    bb = blobs(j,:);
+                    rectangle('Position', bb, 'EdgeColor', 'r', 'LineWidth', 2);
+                    text(bb(1), bb(2), num2str(j), ...
+                        'FontSize', 14, 'FontWeight', 'bold', ...
+                        'Color', 'r', 'HorizontalAlignment', 'center', ...
+                        'VerticalAlignment', 'bottom');
                 end
+                hold off;
             end
         end
-
-        % ROIs procesadas (para futuras extensiones del sistema)
-        % ROIs = [ROIs; crop]
     end
 
-    % Finalización de visualización de la imagen actual
     figure(og);
     hold off;
-    
-end
+end;
