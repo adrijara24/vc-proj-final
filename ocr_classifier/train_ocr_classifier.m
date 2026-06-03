@@ -72,4 +72,4 @@ figure;
 confusionchart(YTest, YPred);
 title("Confusion Matrix - OCR SVM");
 
-save("ocr_model.mat", "svmModel", "imgSize");
+save("ocr_model2.mat", "svmModel", "imgSize");

@@ -7,7 +7,7 @@ function label = classify_character(img)
     
     if isempty(svmModel)
     
-        data = load('ocr_model.mat');
+        data = load('ocr_model2.mat');
     
         svmModel= data.svmModel;
     
