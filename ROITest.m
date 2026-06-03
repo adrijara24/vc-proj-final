@@ -30,12 +30,12 @@ datasetPath = fullfile(pwd, 'Datasets', 'Dataset');
 %images = ["test_049.jpg","test_041.jpg","test_019.jpg","test_018.jpg","test_015.jpg","eu8.jpg","eu4.jpg"];
 %images = ["test_073.jpg",];
 %images = ["test_049.jpg","test_019.jpg","test_015.jpg","eu8.jpg","eu4.jpg"];
-%images = ["test_091.jpg","test_096.jpg","test_079.jpg","test_078.jpg","test_063.jpg","test_071.jpg","test_056.jpg","test_044.jpg","test_029.jpg"];
-images = ["test_092.jpg","test_071.jpg","test_073.jpg","test_061.jpg","test_057.jpg","test_060.jpg","test_048.jpg","test_046.jpg","test_023.jpg","test_017.jpg","test_015.jpg","test_010.jpg","eu8.jpg","eu4.jpg","eu11.jpg",];
+images = ["test_091.jpg","test_096.jpg","test_079.jpg","test_078.jpg","test_063.jpg","test_071.jpg","test_056.jpg","test_044.jpg","test_029.jpg"];
+%images = ["test_092.jpg","test_071.jpg","test_073.jpg","test_061.jpg","test_057.jpg","test_060.jpg","test_048.jpg","test_046.jpg","test_023.jpg","test_017.jpg","test_015.jpg","test_010.jpg","eu8.jpg","eu4.jpg","eu11.jpg",];
 
 %images = ["test_071.jpg","test_070.jpg","test_062.jpg","test_061.jpg","test_058.jpg","test_043.jpg","test_042.jpg","test_039.jpg","test_034.jpg","test_013.jpg"];
 
-i%mages = ["eu4.jpg"];
+%mages = ["eu4.jpg"];
 
 % Alternativa: dataset 2 de vehículos 
 %images = ["Cars0.png", "Cars1.png", "Cars2.png", "Cars3.png", "Cars4.png", "Cars5.png", "Cars6.png", "Cars7.png", "Cars8.png", "Cars9.png", "Cars10.png", "Cars11.png"];
@@ -101,9 +101,15 @@ for k = 1:numel(images)
     
         [aligned, BB] = alignPlate(plate, candidates(i,:));
         blobs = segm(aligned);
+
+        [plateText, charLabels] = recognize_plate(aligned, blobs);
+        fprintf("Matrícula detectada: %s\n", plateText);
+
         if size(blobs,1) <= 3
             [aligned, BB] = alignPlate(255-plate, candidates(i,:));
             blobs = segm(aligned);
+            [plateText, charLabels] = recognize_plate(aligned, blobs);
+            fprintf("Matrícula detectada: %s\n", plateText);
         end
     
         % Visualización
@@ -118,11 +124,16 @@ for k = 1:numel(images)
                 hold on;
                 for j = 1:size(blobs,1)
                     bb = blobs(j,:);
-                    rectangle('Position', bb, 'EdgeColor', 'r', 'LineWidth', 2);
-                    text(bb(1), bb(2), num2str(j), ...
-                        'FontSize', 14, 'FontWeight', 'bold', ...
-                        'Color', 'r', 'HorizontalAlignment', 'center', ...
-                        'VerticalAlignment', 'bottom');
+                    rectangle('Position', bb, ...
+                        'EdgeColor', 'r', ...
+                        'LineWidth', 2);
+                    text(bb(1)+bb(3)/2, ...
+                         bb(2)-5, ...
+                         char(charLabels(j)), ...
+                         'FontSize', 16, ...
+                         'FontWeight', 'bold', ...
+                         'Color', 'r', ...
+                         'HorizontalAlignment', 'center');
                 end
                 hold off;
             end

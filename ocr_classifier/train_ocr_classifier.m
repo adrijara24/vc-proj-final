@@ -17,11 +17,45 @@ imgSize = [32 32];
 
 %% Features Extraction and Model Train
 
-XTrain = extract_character_features(imdsTrain, imgSize);
+numTrain = numel(imdsTrain.Files);
+numTest  = numel(imdsTest.Files);
+
+XTrain = [];
 YTrain = imdsTrain.Labels;
 
-XTest  = extract_character_features(imdsTest, imgSize);
+XTest  = [];
 YTest  = imdsTest.Labels;
+
+imgSize = [32 32];
+
+% -------------------------
+% TRAIN FEATURES
+% -------------------------
+for i = 1:numTrain
+
+    img = readimage(imdsTrain, i);
+
+    feat = extract_character_features(img, imgSize);
+
+    XTrain = [XTrain; feat];
+
+end
+
+% -------------------------
+% TEST FEATURES 
+% -------------------------
+for i = 1:numTest
+
+    img = readimage(imdsTest, i);
+
+    feat = extract_character_features(img, imgSize);
+
+    XTest = [XTest; feat];
+
+end
+
+
+%% Train model 
 
 svmModel = fitcecoc(XTrain, YTrain);
 
