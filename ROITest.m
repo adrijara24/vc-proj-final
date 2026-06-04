@@ -17,7 +17,7 @@ showSegments = true;        % Muestra segmentación de caracteres dentro de la R
 loadDataset = false;    % true -> carga automáticamente dataset completo
                         % false -> usa lista manual de imágenes
 useTxtFiles = true;
-fileFactor = 0.125;
+fileFactor = 1.0;
 showVisuals = true;
 
 % Ruta del dataset

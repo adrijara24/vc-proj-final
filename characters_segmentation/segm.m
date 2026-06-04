@@ -43,12 +43,20 @@ function chars = segm(im)
         end
     end
 
+    % Para descartar simbolos/banderas
+    if size(blobs, 1) >= 3
+        medH = median(blobs(:, 4));
+        keepMask = blobs(:, 4) > medH * 0.80;
+        blobs = blobs(keepMask, :);
+    end
+
     if ~isempty(blobs)
         chars = sortrows(blobs, 1);
     else
         chars = [];
     end
 end
+
 
 function chars = segmOLD(im)
 

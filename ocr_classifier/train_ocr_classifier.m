@@ -4,7 +4,7 @@ close all;
 
 %% Configuration
 
-datasetPath = fullfile(pwd, "Datasets/Characters_Dataset");
+datasetPath = fullfile(pwd, "Datasets/charactersDataset2/training_data");
 
 imds = imageDatastore(datasetPath, ...
     "IncludeSubfolders", true, ...
@@ -57,12 +57,12 @@ end
 
 %% Train model 
 
-svmModel = fitcecoc(XTrain, YTrain);
+svmModel5 = fitcecoc(XTrain, YTrain);
 
 
 %% Model Evaluation
 
-YPred = predict(svmModel, XTest);
+YPred = predict(svmModel5, XTest);
 
 accuracy = sum(YPred == YTest) / numel(YTest);
 
@@ -72,4 +72,4 @@ figure;
 confusionchart(YTest, YPred);
 title("Confusion Matrix - OCR SVM");
 
-save("ocr_model2.mat", "svmModel", "imgSize");
+save("ocr_model5.mat", "svmModel5", "imgSize");
