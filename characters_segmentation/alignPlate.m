@@ -23,15 +23,16 @@ function [alignedCrop, alignedBB] = alignPlate(im, boundingBox)
     
         [szyR, szxR] = size(im);
         %bb2 = [bb(1) - 10, bb(2) - 10, bb(3) + 20, bb(4) + 20];
-        im = imcrop(im, bb);
+        
         off = 15;
         bx = max(1, bb(1) - off);
         by = max(1, bb(2) - off);
         bwi = min(szxR - bx, bb(3) + (2 * off));
         bhe = min(szyR - by, bb(4) + (2 * off));
         bb2 = [bx, by, bwi, bhe];
-        bb = bb2;
-    
+        %bb = bb2;
+        im = imcrop(im, bb);
+
         rot = [
             bb(1), bb(2);
             bb(1) + bb(3), bb(2);

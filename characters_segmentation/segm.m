@@ -31,7 +31,7 @@ function chars = segm(im)
         
         ar = w / h; % Aspect Ratio
 
-        cond_ar = (ar > 0.05 && ar < 0.95);
+        cond_ar = (ar > 0.05 && ar < 1.5);
 
         cond_h = (h > imgHeight * 0.35 && h < imgHeight * 0.95);
 
