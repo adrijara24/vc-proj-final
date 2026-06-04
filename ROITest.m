@@ -17,8 +17,8 @@ showSegments = true;        % Muestra segmentación de caracteres dentro de la R
 loadDataset = false;    % true -> carga automáticamente dataset completo
                         % false -> usa lista manual de imágenes
 useTxtFiles = true;
-fileFactor = 1.0;
-showVisuals = false;
+fileFactor = 0.125;
+showVisuals = true;
 
 % Ruta del dataset
 datasetPath = fullfile(pwd, 'Datasets', 'Dataset');
@@ -38,7 +38,7 @@ images = ["test_091.jpg","test_096.jpg","test_079.jpg","test_078.jpg","test_063.
 
 %images = ["test_071.jpg","test_070.jpg","test_062.jpg","test_061.jpg","test_058.jpg","test_043.jpg","test_042.jpg","test_039.jpg","test_034.jpg","test_013.jpg"];
 
-%mages = ["eu4.jpg"];
+%images = ["eu2.jpg"];
 
 % Alternativa: dataset 2 de vehículos 
 %images = ["Cars0.png", "Cars1.png", "Cars2.png", "Cars3.png", "Cars4.png", "Cars5.png", "Cars6.png", "Cars7.png", "Cars8.png", "Cars9.png", "Cars10.png", "Cars11.png"];
@@ -97,9 +97,11 @@ for k = 1:numel(images)
 
     % Lectura de la imagen actual
     im = imread(images(k));
-    expected = char(platesDataset(k));
-    bestMatch = 0;
-    bestPlate = "";
+    if useTxtFiles
+        expected = char(platesDataset(k));
+        bestMatch = 0;
+        bestPlate = "";
+    end
 
     % FASE 1: DETECCIÓN DE POSIBLES MATRÍCULAS (ROIs)
     candidates = getCandidates(im, false);
@@ -148,34 +150,38 @@ for k = 1:numel(images)
         %fprintf("Matrícula detectada: %s\n", plateText);
         detectedCh = char(plateText);
 
-        if strcmp(detectedCh,expected)
-            match = 2;
-        else
-            m = 0;
-            tmp = expected;
-            for c = 1:length(detectedCh)
-                idx = strfind(tmp, detectedCh(c));
-                if ~isempty(idx)
-                    m = m + 1;
-                    tmp(idx(1)) = [];
+        if useTxtFiles
+            if strcmp(detectedCh,expected)
+                match = 2;
+            else
+                m = 0;
+                tmp = expected;
+                for c = 1:length(detectedCh)
+                    idx = strfind(tmp, detectedCh(c));
+                    if ~isempty(idx)
+                        m = m + 1;
+                        tmp(idx(1)) = [];
+                    end
+                end
+                if m >= 3
+                    match = 1;
                 end
             end
-            if m >= 3
-                match = 1;
+    
+            if match > bestMatch
+                bestMatch = match;
+                bestPlate = plateText;
             end
-        end
-
-        if match > bestMatch
-            bestMatch = match;
-            bestPlate = plateText;
         end
     
         % Visualización
 
         if showVisuals
             figure(og);
-            bbDataset = roisDataset(k, :);
-            rectangle('Position',bbDataset, 'EdgeColor', 'g', 'LineWidth', 2.5);
+            if useTxtFiles
+                bbDataset = roisDataset(k, :);
+                rectangle('Position',bbDataset, 'EdgeColor', 'g', 'LineWidth', 2.5);
+            end
 
             if ~isempty(BB)
                 x_pl = [BB(:,1); BB(1,1)];
@@ -211,21 +217,23 @@ for k = 1:numel(images)
         hold off;
     end
 
-    if bestMatch == 2
-        exactas = exactas + 1;
-        ver = "Correcto";
-    elseif bestMatch == 1
-        parciales = parciales + 1;
-        ver = "Parcialmente correcto";
-    else
-        errores = errores + 1;
-        ver = "Error";
+    if useTxtFiles
+        if bestMatch == 2
+            exactas = exactas + 1;
+            ver = "Correcto";
+        elseif bestMatch == 1
+            parciales = parciales + 1;
+            ver = "Parcialmente correcto";
+        else
+            errores = errores + 1;
+            ver = "Error";
+        end
+        fprintf("Name: %s\n", name);
+        fprintf("Matrícula detectada: %s\n", bestPlate);
+        fprintf("Matrícula esperada:  %s\n", expected);
+        fprintf("Veredicto: %s\n", ver);
+        fprintf("=======================\n");
     end
-    fprintf("Name: %s\n", name);
-    fprintf("Matrícula detectada: %s\n", bestPlate);
-    fprintf("Matrícula esperada:  %s\n", expected);
-    fprintf("Veredicto: %s\n", ver);
-    fprintf("=======================\n");
     if ~showVisuals
         close all hidden;
     end
