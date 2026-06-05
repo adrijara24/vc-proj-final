@@ -94,7 +94,11 @@ exactas = 0;
 parciales = 0;
 errores = 0;
 
-confusionLog = {};
+% Diagnostico: contadores de tipo de error 
+faltan_chars = 0;    % parciales donde faltan caracteres (segmentación)
+sobran_chars = 0;    % parciales donde sobran caracteres (falsos positivos)
+confusion_chars = 0; % parciales donde el nº es correcto pero hay confusiones
+
 
 for k = 1:numel(images)
 
@@ -229,25 +233,6 @@ for k = 1:numel(images)
         elseif bestMatch == 1
             parciales = parciales + 1;
             ver = "Parcialmente correcto";
-
-            % Analisis de Confusiones
-            det = char(bestPlate);
-            exp = expected;
-            tmpExp = exp;
-            tmpDet = det;
-            % Elimina los caracteres que coinciden para quedarse solo con errores
-            for c = length(tmpDet):-1:1
-                idx = strfind(tmpExp, tmpDet(c));
-                if ~isempty(idx)
-                    tmpExp(idx(1)) = [];
-                    tmpDet(c) = [];
-                end
-            end
-            % Empareja lo que faltaba con lo que se detectó de más
-            nPairs = min(length(tmpExp), length(tmpDet));
-            for c = 1:nPairs
-                confusionLog{end+1} = {tmpExp(c), tmpDet(c)};
-            end
         else
             errores = errores + 1;
             ver = "Error";
@@ -276,19 +261,4 @@ precParcial = ((exactas + parciales) / numel(images));
 fprintf("Tasa de acierto: %.0f%%\n", precision * 100);
 fprintf("Tasa de acierto parcial: %.0f%%\n",  precParcial * 100);
 
-% --- RESUMEN DE CONFUSIONES ---
-if ~isempty(confusionLog)
-    % Agrupa y cuenta cada par (real -> detectado)
-    pares = cellfun(@(x) sprintf('%s->%s', x{1}, x{2}), confusionLog, 'UniformOutput', false);
-    [paresSorted, ~, ic] = unique(pares);
-    counts = accumarray(ic, 1);
-    [countsSorted, sortIdx] = sort(counts, 'descend');
 
-    fprintf("\n=== CONFUSIONES MÁS FRECUENTES ===\n");
-    fprintf("  Real -> Detectado   Veces\n");
-    fprintf("  --------------------------\n");
-    for i = 1:length(paresSorted)
-        fprintf("  %-18s  %d\n", paresSorted{sortIdx(i)}, countsSorted(i));
-    end
-    fprintf("===================================\n");
-end

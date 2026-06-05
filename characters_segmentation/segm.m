@@ -28,7 +28,7 @@ function chars = segm(im)
         y = bb(2); 
         w = bb(3); 
         h = bb(4);
-        
+
         ar = w / h; % Aspect Ratio
 
         cond_ar = (ar > 0.05 && ar < 1.5);
@@ -49,6 +49,16 @@ function chars = segm(im)
         keepMask = blobs(:, 4) > medH * 0.80;
         blobs = blobs(keepMask, :);
     end
+    %if ~isempty(blobs)
+
+        %widths  = blobs(:,3);
+        %heights = blobs(:,4);
+
+        %fprintf("Min: %.1fx%.1f\n", min(widths), min(heights));
+        %fprintf("Mean: %.1fx%.1f\n", mean(widths), mean(heights));
+        %fprintf("Max: %.1fx%.1f\n", max(widths), max(heights));
+
+    %end
 
     if ~isempty(blobs)
         chars = sortrows(blobs, 1);
