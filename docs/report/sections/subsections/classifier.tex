@@ -30,7 +30,7 @@ Per garantir la qualitat dels exemples negatius, es calcula la mètrica Intersec
 Les principals funcions implementades en aquest mòdul són:
 \begin{itemize}
     \item \texttt{compute\_iou}: funció exclusiva de la part de generació del dataset. Donades dues bounding boxes, calcula la intersecció sobre la unió (IoU) d'aquestes per assegurar que els exemples negatius no solapen amb la matrícula. D'aquesta forma es garanteix que el classificador aprengui a diferenciar entre matrícules i fons.
-    \item \texttt{extract\_plate\_features}: funció compartida entre la part de generació del dataset i la part de classificació. Extreu el vector de característiques de cada imatge (explicades al següent apartat).
+    \item \texttt{extract\_plate\_features}: funció compartida entre la part d'entrenament i la part de classificació. Extreu el vector de característiques de cada imatge (explicades al següent apartat).
     \item \texttt{classify\_roi}: funció encarregada de carregar el model SVM entrenat i extreure lels característiques i classificar una regió d'interès (ROI) donada. Aquesta funció s'utilitza durant la fase de detecció per filtrar les regions candidates obtingudes a partir de les tècniques de processament d'imatge del mòdul anterior. 
 \end{itemize}
 
@@ -38,7 +38,7 @@ A part d'aquestes funcions principals, s'han implementat els scripts que gestion
 
 \begin{itemize}
     \item \texttt{generate\_dataset}: script encarregat de processar les imatges anotades i generar els crops positius i negatius (com explicat en l'apartat anterior).
-    \item \texttt{train\_plate\_classifier}: script que extreu les característiques de cada imatge amb la funció \texttt{extract\_plate\_features}, divideix els conjutns de features y labels en conjunts de entrenament (80\%) i test (20\%),  i entrena un model SVM amb kernel lineal. Finalment calcula i mostra les mètriques d'avaluació (accuracy i matriu de confusió) sobre el conjunt de test.
+    \item \texttt{train\_plate\_classifier}: script que extreu les característiques de cada imatge amb la funció \texttt{extract\_plate\_features}, divideix els conjutns de features y labels en conjunts de entrenament (80\%) i test (20\%),  i entrena un model SVM amb kernel lineal. Finalment calcula i mostra les mètriques d'avaluació (accuracy, precision, recall i matriu de confusió) sobre el conjunt de test.
 \end{itemize}
 
 Totes aquestes funcions i scripts es poden trobar a l'annex. 

@@ -365,6 +365,11 @@ INPUT sections/subsections/segmentation.tex
 INPUT ./sections/subsections/ocr.tex
 INPUT ./sections/subsections/ocr.tex
 INPUT sections/subsections/ocr.tex
+INPUT ./images/confusionMatrixOCR.png
+INPUT ./images/confusionMatrixOCR.png
+INPUT ./images/confusionMatrixOCR.png
+INPUT ./images/confusionMatrixOCR.png
+INPUT ./images/confusionMatrixOCR.png
 INPUT ./sections/subsections/flowAndOutput.tex
 INPUT ./sections/subsections/flowAndOutput.tex
 INPUT sections/subsections/flowAndOutput.tex
