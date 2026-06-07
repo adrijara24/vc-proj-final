@@ -1,2 +1,37 @@
 
 \section{Descripció General del Funcionament}
+
+El sistema desenvolupat segueix una arquitectura seqüencial formada per diverses etapes de processament, cadascuna de les quals té com a objectiu reduir progressivament la informació de la imatge fins a obtenir el text corresponent a la matrícula. La Figura~\ref{fig:pipeline} mostra de manera esquemàtica el flux general de processament implementat.
+
+\
+
+En primer lloc, a partir de la imatge original del vehicle es realitza una fase de detecció de regions candidates. L'objectiu d'aquesta etapa és localitzar totes les zones que podrien correspondre a una matrícula. Per fer-ho, s'utilitzen tècniques de processament d'imatge basades en la detecció de contorns i propietats geomètriques dels objectes presents a la imatge. Aquesta fase prioritza obtenir una elevada taxa de detecció, encara que això impliqui generar un cert nombre de falsos positius.
+
+\
+
+Les regions candidates obtingudes són posteriorment analitzades per un classificador binari (SVM) encarregat de determinar si una determinada regió conté una matrícula o no. Aquest classificador ha estat entrenat utilitzant descriptors visuals extrets de les imatges i permet descartar la major part de les deteccions incorrectes. Posteriorment, s'aplica una etapa de \textit{Non-Maximum Suppression} (NMS) per eliminar deteccions redundants que corresponen a una mateixa matrícula.
+
+\
+
+Una vegada identificada la regió més probable, es procedeix a la seva alineació geomètrica. Aquesta etapa corregeix possibles inclinacions o deformacions produïdes per la perspectiva de la càmera, amb l'objectiu d'obtenir una imatge de la matrícula el més frontal possible. 
+
+\
+
+A continuació es realitza la segmentació dels caràcters. En aquesta fase la imatge de la matrícula es converteix a escala de grisos i es binaritza. Posteriorment s'apliquen diverses operacions morfològiques, com ara eliminació de soroll, tancament morfològic i filtratge per propietats geomètriques, amb la finalitat d'obtenir les regions corresponents als caràcters individuals. Els objectes detectats són filtrats segons criteris com la seva alçada relativa, relació d'aspecte i ocupació de la caixa contenidora. En cas de que la quantitat de caràcters detectats sigui inferior o igual a 3, es torna a realitzar l'alineació i segmentació amb la inversió de la imatge per intentar detectar matrícules amb fons negre i caràcters clars.
+
+\
+
+Una vegada segmentats els caràcters, es duu a terme el reconeixement de cadascun d'ells. Per representar cada símbol s'extreu un conjunt de característiques descriptives que inclouen descriptors HOG, perfils de projecció horitzontals i verticals, descriptors de densitat per zones, informació topològica i altres característiques estructurals. Aquest vector de característiques és introduït en un classificador basat en SVM, entrenat prèviament amb exemples de lletres i números.
+
+\
+
+Finalment, els caràcters reconeguts es concatenen seguint el seu ordre espacial dins de la matrícula per obtenir el text final detectat. Aquest resultat és comparat amb les anotacions disponibles al conjunt de dades per tal d'avaluar el rendiment global del sistema.
+
+\vspace{0.5cm}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/pipeline.png}
+    \caption{Esquema del pipeline de processament implementat per al reconeixement de matrícules.}
+    \label{fig:pipeline}
+\end{figure}

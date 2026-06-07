@@ -327,9 +327,15 @@ OUTPUT report.toc
 INPUT ./sections/intro.tex
 INPUT ./sections/intro.tex
 INPUT sections/intro.tex
+INPUT c:/texlive/2026/texmf-dist/fonts/tfm/public/cm/cmti12.tfm
 INPUT ./sections/projectDescription.tex
 INPUT ./sections/projectDescription.tex
 INPUT sections/projectDescription.tex
+INPUT ./images/pipeline.png
+INPUT ./images/pipeline.png
+INPUT ./images/pipeline.png
+INPUT ./images/pipeline.png
+INPUT ./images/pipeline.png
 INPUT ./sections/implementation.tex
 INPUT ./sections/implementation.tex
 INPUT sections/implementation.tex
@@ -342,6 +348,9 @@ INPUT sections/subsections/classifier.tex
 INPUT ./sections/subsections/plateCandidatesCleaning.tex
 INPUT ./sections/subsections/plateCandidatesCleaning.tex
 INPUT sections/subsections/plateCandidatesCleaning.tex
+INPUT ./sections/subsections/alignment.tex
+INPUT ./sections/subsections/alignment.tex
+INPUT sections/subsections/alignment.tex
 INPUT ./sections/subsections/segmentation.tex
 INPUT ./sections/subsections/segmentation.tex
 INPUT sections/subsections/segmentation.tex
@@ -362,3 +371,4 @@ INPUT ./report.out
 INPUT ./report.out
 INPUT c:/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb
 INPUT c:/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb
+INPUT c:/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb
