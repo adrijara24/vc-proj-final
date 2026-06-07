@@ -1,7 +1,31 @@
 \babel@toc {spanish}{}\relax 
 \thispagestyle {empty}
-\contentsline {section}{\numberline {1}Introducció}{1}{section.1}%
-\contentsline {section}{\numberline {2}Descripció del Projecte}{1}{section.2}%
-\contentsline {section}{\numberline {3}Implementació}{1}{section.3}%
-\contentsline {subsection}{\numberline {3.1}Preprocessament}{1}{subsection.3.1}%
-\contentsline {subsection}{\numberline {3.2}Classificador de matrícules}{1}{subsection.3.2}%
+\contentsline {section}{\numberline {1}Introducció}{2}{section.1}%
+\contentsline {section}{\numberline {2}Descripció General del Funcionament}{2}{section.2}%
+\contentsline {section}{\numberline {3}Implementació}{2}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Preprocessament i Generació de Candidats}{2}{subsection.3.1}%
+\contentsline {subsubsection}{\numberline {3.1.1}Funcions Implementades}{2}{subsubsection.3.1.1}%
+\contentsline {subsubsection}{\numberline {3.1.2}Decisions de Disseny}{2}{subsubsection.3.1.2}%
+\contentsline {subsection}{\numberline {3.2}Classificador de Matrícules}{2}{subsection.3.2}%
+\contentsline {subsubsection}{\numberline {3.2.1}Funcions Implementades}{2}{subsubsection.3.2.1}%
+\contentsline {subsubsection}{\numberline {3.2.2}Decisions de Disseny}{2}{subsubsection.3.2.2}%
+\contentsline {subsection}{\numberline {3.3}Neteja de Candidats Finals}{2}{subsection.3.3}%
+\contentsline {subsubsection}{\numberline {3.3.1}Funcions Implementades}{2}{subsubsection.3.3.1}%
+\contentsline {subsubsection}{\numberline {3.3.2}Decisions de Disseny}{2}{subsubsection.3.3.2}%
+\contentsline {subsection}{\numberline {3.4}Segmentació de Caràcters}{2}{subsection.3.4}%
+\contentsline {subsubsection}{\numberline {3.4.1}Funcions Implementades}{2}{subsubsection.3.4.1}%
+\contentsline {subsubsection}{\numberline {3.4.2}Decisions de Disseny}{2}{subsubsection.3.4.2}%
+\contentsline {subsection}{\numberline {3.5}OCR}{2}{subsection.3.5}%
+\contentsline {subsubsection}{\numberline {3.5.1}Funcions Implementades}{2}{subsubsection.3.5.1}%
+\contentsline {subsubsection}{\numberline {3.5.2}Decisions de Disseny}{2}{subsubsection.3.5.2}%
+\contentsline {subsection}{\numberline {3.6}Resum del Flux i generació d'output}{2}{subsection.3.6}%
+\contentsline {section}{\numberline {4}Resultats Finals}{2}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Exemples}{2}{subsection.4.1}%
+\contentsline {section}{\numberline {5}Annexos}{2}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Codi Font}{2}{subsection.5.1}%
+\contentsline {subsubsection}{\numberline {5.1.1}main}{2}{subsubsection.5.1.1}%
+\contentsline {subsubsection}{\numberline {5.1.2}candidates\_detection}{2}{subsubsection.5.1.2}%
+\contentsline {subsubsection}{\numberline {5.1.3}plate\_classifier}{2}{subsubsection.5.1.3}%
+\contentsline {subsubsection}{\numberline {5.1.4}character\_segmentation}{2}{subsubsection.5.1.4}%
+\contentsline {subsubsection}{\numberline {5.1.5}dataset\_generation}{2}{subsubsection.5.1.5}%
+\contentsline {subsubsection}{\numberline {5.1.6}ocr\_classifier}{2}{subsubsection.5.1.6}%
