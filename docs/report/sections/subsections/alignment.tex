@@ -2,5 +2,20 @@
 \subsection{Alineació de la Matrícula Candidata}
 
 \subsubsection{Funcions Implementades}
+Un cop obtingudes les regions candidates ya classificades, s'ha implementat una funció per alinear-les: \texttt{alignPlate}
 
+\begin{itemize}
+    \item \textbf{Preparació de la imatge}: La imatge es converteix a escala de grisos, se n'ajusta el contrast,  i es binaritza per llindar adaptatiu (\texttt{imbinarize(im, 'adaptive')}) per mitigar els canvis d'il·luminació.
+    \item \textbf{Càlcul de l'angle}: S'extreuen els components connexos de la imatge binaritzada i es selecciona el més gran. S'utilitza la propietat \textit{Orientation} de \texttt{regionprops} per obtindre l'angle d'inclinació d'aquest component.
+    \item \textbf{Rotació i retall}: La imatge original i la binaritzada es roten utilitzant l'angle. Seguidament, es torna a calcular la \textit{bounding box} sobre la imatge ja recta per eliminar l'espai negre residual generat per la rotació, i fer un retall definitiu. Aquest pas és per acotar més la matrícula doncs en alguns casos la ROI seguia sent massa gran.
+    \item \textbf{Projecció geomètrica}: Es fa servir una matriu de rotació 2D tenint en compte els centres geomètrics de la imatge rotada i original per projectar els quatre vèrtexs de la nova \textit{bounding box} cap a les coordenades absolutes de la imatge original. Aquest últim pas només afecta a la visualització de la regió.
+\end{itemize}
 \subsubsection{Decisions de Disseny}
+L'objectiu d'aquesta etapa és corregir les distorsions de perspectiva i inclinació de la càmera, ja que els algorismes de reconeixement de caràcters (OCR) i la extracció de característiques són sensibles a la rotació.
+
+Per aquesta raó, hem escollit la solució amb components connexos amb \texttt{regionprops} doncs és un métode robust per trobar la inclinació i dades de la matrícula. En la majoria de casos, la matrícula és el \textit{blob} més gran de la ROI.
+
+\textbf{Alternatives Descartades}: Durant la fase de disseny, es van avaluar, implementar i descartar l'altraestratègies tradicionals per alinear les matrícules. La taula \ref{preproc_ALIGN} resumeix els motius pels quals es va abandonar a favor de l'enfocament actual.
+
+Transformada de Hough \\
+Mitjançant Canny i la transformada de Hough, es va crear un mètode similar al actual, però els resultats no eren els esperats, i algunes matrícules no tenien la rotació correcta amb un error inassumible. Per aquest motiu, vam descartar aquesta implementació a favor de la actual.
