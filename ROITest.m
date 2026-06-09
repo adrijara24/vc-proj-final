@@ -11,11 +11,9 @@ end
 % Flags para controlar la visualización y ejecución del sistema
 
 showSteps = false;      % Muestra pasos intermedios del detector de ROIs
-%showResult = false;      % Activa visualización de resultados globales
 showSegments = true;        % Muestra segmentación de caracteres dentro de la ROI
 
-loadDataset = false;    % true -> carga automáticamente dataset completo
-                        % false -> usa lista manual de imágenes
+loadDataset = false;
 useTxtFiles = true;
 fileFactor = 1.0;
 showVisuals = false;
@@ -25,25 +23,7 @@ datasetPath = fullfile(pwd, 'Datasets', 'Dataset');
 
 
 % Lista de imagenes a procesar
-
-%images = ["eu1.jpg","eu2.jpg","eu3.jpg","eu4.jpg","eu5.jpg","eu8.jpg","eu9.jpg","eu11.jpg","test_097.jpg","test_012.jpg","test_013.jpg","test_044.jpg","test_045.jpg","test_049.jpg","test_066.jpg"];
-%Imagenes que no acotan bien
-%images = ["test_092.jpg","test_090.jpg","test_066.jpg","test_061.jpg","test_058.jpg","test_042.jpg","test_033.jpg","test_097.jpg"];
-%Imagenes donde no se detecta la matrícula
-%images = ["test_049.jpg","test_041.jpg","test_019.jpg","test_018.jpg","test_015.jpg","eu8.jpg","eu4.jpg"];
-%images = ["test_073.jpg",];
-%images = ["test_049.jpg","test_019.jpg","test_015.jpg","eu8.jpg","eu4.jpg"];
-%images = ["test_091.jpg","test_096.jpg","test_079.jpg","test_078.jpg","test_063.jpg","test_071.jpg","test_056.jpg","test_044.jpg","test_029.jpg"];
 images = ["test_092.jpg","test_071.jpg","test_073.jpg","test_061.jpg","test_057.jpg","test_060.jpg","test_048.jpg","test_046.jpg","test_023.jpg","test_017.jpg","test_015.jpg","test_010.jpg","eu8.jpg","eu4.jpg","eu11.jpg",];
-
-%images = ["test_071.jpg","test_070.jpg","test_062.jpg","test_061.jpg","test_058.jpg","test_043.jpg","test_042.jpg","test_039.jpg","test_034.jpg","test_013.jpg"];
-
-%images = ["eu2.jpg"];
-
-% Alternativa: dataset 2 de vehículos 
-%images = ["Cars0.png", "Cars1.png", "Cars2.png", "Cars3.png", "Cars4.png", "Cars5.png", "Cars6.png", "Cars7.png", "Cars8.png", "Cars9.png", "Cars10.png", "Cars11.png"];
-
-
 
 % Carga del dataset
 if useTxtFiles
@@ -83,7 +63,6 @@ elseif loadDataset
     images = string(images);
 
 else 
-    % Construcción de rutas completas para las imágenes seleccionadas
     images = fullfile(datasetPath, images);
     images = string(images);
 end
