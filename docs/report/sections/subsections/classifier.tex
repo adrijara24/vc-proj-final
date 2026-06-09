@@ -1,6 +1,98 @@
-
 \subsection{Classificador de Matrícules}
+
+En aquesta etapa del projecte s'ha implementat un classificador binari encarregat de determinar si una regió d'imatge (ROI) conté o no una matrícula de vehicle. Cada imatge es transforma en un vector de característiques i posteriorment es classifica mitjançant un model (SVM) prèviament entrenat. 
+
+\subsubsection{Generació del Dataset}
+
+Per entrenar el classificador s'ha utilitzat el dataset públic \textit{Car License Plate Detection} disponible a Kaggle, el qual conté 433 imatges de vehicles amb les corresponents anotacions en format XML, que inclouen la posició de la matrícula dins de cada imatge.
+
+\
+
+Per tenir les dades en un format adequat per a l'entrenament del model, s'ha realitzat un procés de generació de mostres positives i negatives a partir de les imatges anotades mitjançant un script. L'script realitza les següents operacions per a cada imatge del dataset:
+
+\begin{itemize}
+    \item Lectura de la imatge i del fitxer XML associat.
+    \item Extracció de la bounding box de la matrícula.
+    \item Aplicació d'un padding del 5\% per incloure context visual al voltant de la matrícula.
+    \item Generació d'un exemple positiu mitjançant el retall directe de la matrícula.
+    \item Generació de 5 exemples negatius mitjançant mostreig aleatori de regions de la imatge que no solapen amb la matrícula.
+\end{itemize}
+
+Aquests retalls són emmagatzemats en dues carpetes separades: una per a les mostres positives (matrícules) i una altra per a les mostres negatives (fons o objectes no rellevants).
+
+\
+
+Per garantir la qualitat dels exemples negatius, es calcula la mètrica Intersection over Union (IoU) entre la regió generada i la matrícula real. Només es conserven aquells crops amb IoU inferior a 0.1, evitant així mostres amb informació parcial de la matrícula.
+
 
 \subsubsection{Funcions Implementades}
 
+Les principals funcions implementades en aquest mòdul són:
+\begin{itemize}
+    \item \texttt{compute\_iou}: funció exclusiva de la part de generació del dataset. Donades dues bounding boxes, calcula la intersecció sobre la unió (IoU) d'aquestes per assegurar que els exemples negatius no solapen amb la matrícula. D'aquesta forma es garanteix que el classificador aprengui a diferenciar entre matrícules i fons.
+    \item \texttt{extract\_plate\_features}: funció compartida entre la part d'entrenament i la part de classificació. Extreu el vector de característiques de cada imatge (explicades al següent apartat).
+    \item \texttt{classify\_roi}: funció encarregada de carregar el model SVM entrenat i extreure lels característiques i classificar una regió d'interès (ROI) donada. Aquesta funció s'utilitza durant la fase de detecció per filtrar les regions candidates obtingudes a partir de les tècniques de processament d'imatge del mòdul anterior. 
+\end{itemize}
+
+A part d'aquestes funcions principals, s'han implementat els scripts que gestionen tot el procés:
+
+\begin{itemize}
+    \item \texttt{generate\_dataset}: script encarregat de processar les imatges anotades i generar els crops positius i negatius (com explicat en l'apartat anterior).
+    \item \texttt{train\_plate\_classifier}: script que extreu les característiques de cada imatge amb la funció \texttt{extract\_plate\_features}, divideix els conjutns de features y labels en conjunts de entrenament (80\%) i test (20\%),  i entrena un model SVM amb kernel lineal. Finalment calcula i mostra les mètriques d'avaluació (accuracy, precision, recall i matriu de confusió) sobre el conjunt de test.
+\end{itemize}
+
+Totes aquestes funcions i scripts es poden trobar a l'annex. 
+
+
 \subsubsection{Decisions de Disseny}
+
+Primer de tot, en les decisions de disseny del dataset d'entrenament, s'ha optat per buscar un d'internet ja que el dataset donat per l'entrega era massa petit (només 100 imatges) per entrenar un model de classificació robust. A més, es va decidir generar exemples negatius a partir de les mateixes imatges del dataset per garantir que el model aprengués a diferenciar entre matrícules i fons en el mateix context visual (portes, carrers, llums, etc). 
+També es va decidir aplicar un padding del 5\% a les bounding boxes de les matrícules per incloure una mica de context visual al voltant d'aquestes.
+
+\
+
+En el disseny del classificador s'ha optat per un enfocament basat en \textit{Support Vector Machines} (SVM) amb kernel lineal, degut a la seva bona capacitat de generalització en problemes de classificació binària amb vectors de característiques d'alta dimensió.
+
+\ 
+
+Pel que fa a la representació de les imatges, s'ha escollit els següents descriptors:
+
+\begin{itemize}
+    \item \textbf{HOG (Histogram of Oriented Gradients)}: com les matrícules tenen una estructura visual molt característica (línies horitzontals i verticals, contrast entre caràcters i fons), els descriptors HOG són molt adequats per capturar aquesta informació. S'han utilitzat 9 orientacions i cel·les de 8x8 píxels.
+    \item \textbf{Aspect ratio}: relació entre amplada i alçada de la regió, que ajuda a diferenciar matrícules de regions quadrades o irregulars.
+    \item \textbf{Area total}: mida de la regió, que aporta informació addicional sobre l'escala de l'objecte.
+\end{itemize}
+
+Inicialment només es van utilitzar els descriptors HOG. Tot i tenir una bona performance inicial, després de les proves es va observar que el model, en moments puntuals detectava regions amb aspect ratio molt diferent al d'una matrícula (per exemple, regions molt quadrades o molt allargades). Per aquest motiu es van afegir les característiques d'aspect ratio i area total. No van ser de gran ajuda degut a la dimensionalitat de HOG respecte a aquestes dues característiques, però es van decidir mantenir. 
+
+\
+
+Totes les imatges es redimensionen a una mida fixa abans de l'extracció de característiques per garantir consistència en els descriptors. Es va decidir utilitzar una mida de 128x64 píxels. 
+
+
+\subsubsection{Resultats i rendiment del classificador}
+
+Per avaluar el rendiment del classificador SVM s'ha utilitzat un conjunt de test independent del conjunt d'entrenament (del 20\%) i s'ha establert una seed fixa (42) per reproduir els resultats. La mètrica principal utilitzada ha sigut la matriu de confusió, d'on s'han tret també les mètriques de accuracy, precision i recall. 
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/confusionMatrixPlateClassifier.png}
+    \caption{Matriu de confusió del classificador SVM}
+\end{figure}
+
+Després es van calcular les següents mètriques:
+
+\begin{itemize}
+    \item \textbf{Accuracy}: 98.62\%
+    \item \textbf{Precision}: 97.56\%
+    \item \textbf{Recall}: 94.12\%
+\end{itemize}
+
+Els resultats obtinguts mostren una capacitat de discriminació adequada entre les classes positives (matrícules) i negatives (no matrícules).
+
+\paragraph{Errors trobats}
+Els principals errors es produeixen en regions amb característiques visuals similars a les matrícules, com ara parts del vehicle amb formes rectangulars (reixes, filtres, etc.) o text en el fons. 
+
+\ 
+
+Tot i això, posteriorment es fa un tractament d'aquests casos a través que s'explica a continuació. 

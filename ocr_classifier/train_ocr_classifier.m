@@ -12,8 +12,6 @@ imds = imageDatastore(datasetPath, ...
 
 [imdsTrain, imdsTest] = splitEachLabel(imds, 0.8, "randomized");
 
-imgSize = [32 32];
-
 
 %% Features Extraction and Model Train
 
