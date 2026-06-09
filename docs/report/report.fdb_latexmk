@@ -1,5 +1,5 @@
 # Fdb version 4
-["pdflatex"] 1780859382.54073 "c:/Users/Eric/Documents/UPC/4to/VC/Projecte/vc-proj-final/docs/report/report.tex" "report.pdf" "report" 1780859384.32816 0
+["pdflatex"] 1780949510.57272 "c:/Users/Eric/Documents/UPC/4to/VC/Projecte/vc-proj-final/docs/report/report.tex" "report.pdf" "report" 1780949513.85352 0
   "c:/Users/Eric/Documents/UPC/4to/VC/Projecte/vc-proj-final/docs/report/report.tex" 1780825582 3593 dcb85013e4f1ca17e533427be03b97a2 ""
   "c:/texlive/2026/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc" 1773770163 2900 1537cc8184ad1792082cd229ecc269f4 ""
   "c:/texlive/2026/texmf-dist/fonts/map/fontname/texfonts.map" 1773770970 3524 cb3e574dea2d1052e39280babc910dc8 ""
@@ -183,17 +183,17 @@
   "images/confusionMatrixOCR.png" 1780858048 84886 2cbfa54970868f9cada4d3030bef2c70 ""
   "images/confusionMatrixPlateClassifier.png" 1780858048 21675 f75ff14f9981f9acb05793b871e30543 ""
   "images/pipeline.png" 1780829944 1203154 b412f6fec76f01cc38810f341f53d0ac ""
-  "report.aux" 1780859384 6651 fc987d075880298dd3c1e4f6dcd97ec0 "pdflatex"
-  "report.out" 1780859384 7252 a1af44992d962e20e0824d9d3ed99fbb "pdflatex"
+  "report.aux" 1780949513 6651 fc987d075880298dd3c1e4f6dcd97ec0 "pdflatex"
+  "report.out" 1780949513 7252 a1af44992d962e20e0824d9d3ed99fbb "pdflatex"
   "report.tex" 1780825582 3593 dcb85013e4f1ca17e533427be03b97a2 ""
-  "report.toc" 1780859384 3892 42905e17426af1ac0b169917c03b62ff "pdflatex"
+  "report.toc" 1780949513 3892 42905e17426af1ac0b169917c03b62ff "pdflatex"
   "sections/annexes.tex" 1780825372 264 dede8d440aac5a43371527d9c265aa85 ""
   "sections/finalResults.tex" 1780825550 53 5647b668b29047689715e13f8b7d9fa9 ""
   "sections/implementation.tex" 1780828491 358 3006fa287a9b1ae373b5026c95902e44 ""
   "sections/intro.tex" 1780828361 1015 5426e664a8c15d56dfb806ae7a7daaf0 ""
   "sections/projectDescription.tex" 1780830207 3507 dfcb966e52d926a5ea7052dcdd78870b ""
   "sections/subsections/alignment.tex" 1780828498 136 6515303bfb838df6c40891dd3c5e68a6 ""
-  "sections/subsections/classifier.tex" 1780858048 7380 f9ba18cf4dcd7af55a7c50a75b02fa5c ""
+  "sections/subsections/classifier.tex" 1780949508 7378 79f9e98b0a06da91f83d349c0edcd056 ""
   "sections/subsections/flowAndOutput.tex" 1780826134 51 237727e7766842ba5cc6853a1d6ee489 ""
   "sections/subsections/ocr.tex" 1780858048 6439 b721aa98c87148c5d06d15a7c6ac2743 ""
   "sections/subsections/plateCandidatesCleaning.tex" 1780859383 4063 355a0d061678e6491628706a55e8cc9b ""
