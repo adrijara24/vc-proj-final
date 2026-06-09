@@ -39,7 +39,13 @@ function chars = segm(im)
         cond_ext = (S(k).Extent > 0.12 && S(k).Extent < 1.0);
 
         if cond_ar && cond_h && cond_ext
-            blobs = [blobs; bb];
+            dfW = w * 0.10;
+            dfH = h * 0.05;
+            x2 = x - dfW;
+            y2 = y - dfH;
+            w2 = w + dfW * 2;
+            h2 = h + dfH * 2;
+            blobs = [blobs; [x2, y2, w2, h2]];
         end
     end
 

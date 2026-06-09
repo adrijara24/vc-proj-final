@@ -1,2 +1,26 @@
 
 \subsection{Resum del Flux i generació d'output}
+En aquest apartat resumim el programa principal, els seus paràmetres de control i les diferents etapes del nostre pipeline.
+
+\subsubsection{Paràmetres de control}
+A l'inici del programa es poden trobar les següents variables de control:
+\begin{itemize}
+    \item \textbf{loadDataset}: Variable de control per carregar directament les imatges de la carpeta \texttt{"Datasets/Dataset"}. \texttt{useTxtFiles} te preferència sobre aquesta variable, i la informació final és incompleta al no tindre dades dels arxius del ground truth.
+    \item \textbf{useTxtFiles}: Carrega els arxius ".txt" de la carpeta \texttt{"Datasets/Dataset"}. Permet extreure dades d'avaluació segons les posicions. Es recomana deixar a true.
+    \item \textbf{fileFactor}: Percentatge $[0.0, 1.0]$ d'arxius a carregar. Per els casos on només es vol executar una part petita del dataset.
+    \item \textbf{showVisuals}: Variable per ensenyar les imatges resultants amb les ROI i la segmentació, o només sortida de consola.
+\end{itemize}
+
+\subsubsection{Pipeline}
+Un cop carregades les imatges, el pipeline per a cada imatge seqüencial és el següent:
+\begin{itemize}
+    \item \textbf{Fase 1: Detecció i filtratge de ROIs} S'extreuen els candidats a ser ROI amb \texttt{getCandidates}. A continuació, cada candidat passa a un classificador \texttt{classify\_roi} que descarta ls crops que no encaixen amb una matrícula. Finalment, s'aplica un algorisme de \textit{Supressió de No Màxims} (NMS) sobre les prediccions vàlides per eliminar bounding boxes solapades, retenint la que és més probable que sigui una matrícula.
+
+    \item \textbf{Fase 2: Alineació i Reconeixement}: Sobre els candidats que han superat la fase anterior, apliquem una correcció de perspectiva amb la funció \texttt{alignPlate} seguit d'un escalat per millorar la resolució. Seguidament, passem el crop a la funció \texttt{segm} i aquesta ens retorna un conjunt ordenat de blobs, que passem al classificador de caràcters.
+
+    \item \textbf{Mecanisme de recuperació (Fallback)}: Si la quantitat de caràcters que hem detectat dins la ROI alineada és inferior a 3, assumim que pot existir un problema d'il·luminació o contrast (el cas més habitual és caràcters blanc sobre fons fosc) En aquests casos, invertim el color de la imatge, i repetim el procés sencer de la fase 2 per aconseguir una bona segmentació.
+    
+    \item \textbf{Recol·lecció de dades}: Un cop s'obté una lectura de matrícula, avaluem si és un match exacte, parcial o si hi ha error per les estadístiques. S'escriu per la consola al moment la matrícula esperada i la que hem obtingut amb el nostre pipeline.
+\end{itemize}
+
+Un cop acabades les fases, imprimim les dades recol·lectades durant la execució per tindre mètriques d'avaluació del nostre programa.

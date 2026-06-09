@@ -2,5 +2,57 @@
 \subsection{Preprocessament i Generació de Candidats}
 
 \subsubsection{Funcions Implementades}
+Per a la detecció de les possibles regions d'interès (ROI) candidates a ser matrícules, s'ha implementat la funció \texttt{getCandidates}, que processa la imatge segons les següents etapes:
+\begin{itemize}
+    \item \textbf{Preparació de la imatge}: Es converteix la imatge a escala de grisos (\texttt{rgb2gray}) i millorem el contrast amb \texttt{imadjust}
+    \item \textbf{Detecció de vores}: S'aplica un filtre d'extracció de vores basat en Sobel, configurat per detectar exclusivament els gradients verticals (\texttt{edge(im, 'sobel', 'vertical')}).
+    \item \textbf{Processament morfològic iteratiu}: S' itera sobre un conjunt d'elements estructurants rectangulars de diferents mides. Per a cadascun, es realitza un tancament (close) manual estructurat en tres subetapes: una dilatació, un ompliment de forats interns, i finalment la erosió.
+    \item \textbf{Extracció de regions}: S'extreuen els components connexos amb \texttt{bwconncomp} i se n'obtenen les propietats geomètriques (BoundingBox, Area, Extent) a través de \texttt{regionprops}. A cada boundingbox resultant, se li aplica un petit marge de seguretat de píxels per no tallar la matrícula.
+    \item \textbf{Filtratge de candidats}: Les regions extretes passen per un filtre final on es calculen paràmetres derivats per descartar falsos positius evidents abans de retornar els resultats.
+\end{itemize}
 
 \subsubsection{Decisions de Disseny}
+El mètode que hem descrit prèviament, respon a una estratègia on busquem maximitzar el \textit{recall}, assegurant-nos que la matrícula real sempre estigui entre els candidats. Deleguem la tasca d'eliminar els falsos positius al classificador.
+
+\
+
+\textbf{Disseny del processament morfològic:}
+S'ha escollit el filtre Sobel vertical perquè les matrícules generen una alta densitat de edges verticals a causa dels caràcters. A més, s'ha optat per una operació \textit{close} manual per poder fer servir imfill i tancar agressivament els forats interns entre les lletres, fusionant la matrícula en un sol \textit{blob} sòlid.
+
+Per garantir la invariància a l'escala, hem optat per aplicar sis elements estructurants diferents.
+\begin{itemize}
+    \item Mides fixes: $[1, 5]$, $[2, 12]$, $[5, 20]$, $[8, 30]$, $[12, 45]$
+    \item Mida dinàmica: [$0.010 \times \text{sizeY}, 0.030 \times \text{sizeX}$] per adaptar-se a resolucions extremes de càmera.
+\end{itemize}
+
+\textbf{Criteris de filtratge geomètric}
+
+S'han establert tres condicions de tall molt permissives per eliminar només les ROIs inassumibles:
+
+\begin{itemize}
+    \item \textbf{isWide}: Limitem l'aspect ratio de la regió entre 1.7 i 12. Aquest marge tan ampli evita descartar matrícules que es vegin extremadament estirades a causa de la distorsió per perspectiva.
+
+    \item \textbf{isRect}: Exigim un \textit{Extent} (densitat de píxels del blob dins el bounding box) $\geq 0.15$ per descartar soroll aïllat o línies extremadament fines.
+
+    \item \textbf{isReasonable}: Es limita l'àrea relativa del blob. S'eliminen sorolls petits ($< 0.05\%$) i blobs que ocupin més d'un 25\% de la imatge total. Assumim el risc teòric de descartar matrícules que ocupin tota la pantalla (poc comú en un entorn real) per evitar errors severs on es selecciona la carrosseria sencera del vehicle com a candidata (ex. \textit{test\_097}).
+\end{itemize}
+
+\textbf{Alternatives Descartades:}
+Durant la fase de disseny, es van avaluar, implementar, i descartar altres estratègies tradicionals per a la cerca de matrícules. La taula \ref{tab:preproc_ROI} resumeix els motius pels quals es van abandonar a favor de l'enfocament actual.
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|p{4cm}|p{2.5cm}|p{6cm}|}
+        \hline
+        \textbf{Mètode} & \textbf{Motivació} & \textbf{Motiu de descart} \\
+        \hline
+        Detecció de Vèrtex & Ideal per trobar quatre punts que representen el contorn rectangular de la matrícula & Explosió combinatòria. S'obtenien situacions amb més de 150 vèrtexs candidats, representant milions de combinacions possibles (inassumible computacionalment). A baixa resolució rarament es detecten bé les quatre cantonades.\\
+        \hline
+        SIFT & Detecció directa basada en punts d'interès (POI) i pattern matching. & Les diferències entre els caràcters de cada matrícula confonen l'algorisme general. És incapaç de trobar un patró universal robuts. \\
+        \hline
+        Transformada de Hough & Detecció de línies rectes verticals i horitzontals. & En condicions de baixa il·luminació o alta distorsió, els contorns no es detectaven correctament o perdien prioritat davant d'altres línies rectes del vehicle. \\
+        \hline
+    \end{tabular}
+    \caption{Comparativa de mètodes de detecció de ROIs}
+    \label{tab:preproc_ROI}
+\end{table}
