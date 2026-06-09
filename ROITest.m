@@ -16,7 +16,7 @@ showSegments = true;        % Muestra segmentación de caracteres dentro de la R
 loadDataset = false;
 useTxtFiles = true;
 fileFactor = 1.0;
-showVisuals = false;
+showVisuals = true;
 
 % Ruta del dataset
 datasetPath = fullfile(pwd, 'Datasets', 'Dataset');

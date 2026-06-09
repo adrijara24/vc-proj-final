@@ -1,4 +1,87 @@
 
 \section{Resultats Finals}
+En aquest apartat presentem i analitzem els resultats globals obtinguts en executar el \textit{pipeline} de detecció i reconeixement de matrícules sobre el dataset de prova, el qual compta amb un total de 108 imatges.
+El sistema ha assolit ua \textit{tasa d'encert} del 59\% (64 imatges sobre el total) i una \textit{tasa d'encert parcial} (3 caràcters o més) del 98\% (42 imatges sobre el total). Únicament s'han registrat 2 errors totals.
+\subsection{Extractes de la sortida}    
+Aquí podem veure un extracte de la sortida final. Veiem els resultats que ja hem comentat. Les imatges que donen error han fallat en algun punt de la \textit{Fase 1: Detecció i filtratge de ROIs}.
+\begin{verbatim}
+===============================
+     RESULTADOS FINALES      
+Imagenes evaluadas: 108
+===============================
+Iguales: 64
+Parciales: 42
+Errores: 2
+===============================
+Tasa de acierto: 59%
+Tasa de acierto parcial: 98%
+\end{verbatim}
+\subsubsection{Anàlisi de Confusions Tipogràfiques}
+Per tal d'identificar les debilitats del model de reconeixement de caràcters (OCR), hem extret les confusions més freqüents. Classifiquem els errors en tres blocs principals:
+\begin{itemize}
+    \item \textbf{Ambigüitat alfanumèrica \texttt{O $\rightarrow$ 0}}: L'error amb diferència més repetit, la única distinció és la distància de les vores al centre, però depèn fortament d'on procedeix la matrícula i de la resolució, doncs moltes vegades són detalls subtils que es perden.
+    \item \textbf{Densitat de traços \texttt{M $\rightarrow$ N $\wedge$ W $\rightarrow$ H}}:Els caràcters llargs com M i W presenten una alta densitat de línies de contrast en un espai a vegades molt reduït, fent que a vegades es poguin confondre amb una N o una H respectivament.
+    \item \textbf{Deformació per soroll \texttt{0 $\rightarrow$ Q $\wedge$ 8 $\rightarrow$ B}}: Aquests errors solen vindre per soroll o pèrdua de resolució al alinear la matrícula. Una petita traça fosca aherida a la part inferior dreta d'un 0 pot semblar una Q per al classificador. De la mateixa manera, la pérdua de resolució pot fer que la part esquerra d'un 8 s'aplani lleugerament i el classificador ho entengui com una B.
+\end{itemize}
 
-\subsection{Exemples}
+Afegim una taula de referència amb els errors més repetits, obviant els errors que apareixen només un únic cop.
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|c|c|c|}
+    \hline
+         \textbf{Caràcter Real} & \textbf{Caràcter Detectat} & \textbf{Nombre de vegades}\\ \hline
+         \texttt{O} & \texttt{0} & 9 \\ \hline
+         \texttt{M} & \texttt{N} & 5 \\ \hline
+         \texttt{W} & \texttt{H} & 5 \\ \hline
+         \texttt{0} & \texttt{Q} & 4 \\ \hline
+         \texttt{8} & \texttt{B} & 4 \\ \hline
+         \texttt{0} & \texttt{D} & 2 \\ \hline
+         \texttt{A} & \texttt{N} & 2 \\ \hline
+         \texttt{M} & \texttt{H} & 2 \\ \hline
+         \texttt{O} & \texttt{Q} & 2 \\ \hline
+         \texttt{V} & \texttt{Y} & 2 \\ \hline
+    \end{tabular}
+    \caption{Confusions tipogràfiques més significatives}
+    \label{tab:tab_RESERR}
+\end{table}
+
+\subsection{Exemples d'Execució}
+A continuació podem observar quatre escenaris representatius del comportament del sistema durant la fase d'avaluació
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{images/mat-GWAGEN.png}
+    \caption{Cas correcte}
+    \label{fig:res_correct}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{images/mat-RK896AO.png}
+    \caption{Error d'ambigüitat}
+    \label{fig:res_ambiguity}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{images/mat-RK576AH.png}
+    \caption{Error de segmentació}
+    \label{fig:res_segment}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{images/mat-RK884AL.png}
+    \caption{Error total}
+    \label{fig:res_error}
+\end{figure}
+
+\subsection{Conclusió}
+Com a conclusió d'aquesta fase d'avaluació, els resultats obtinguts demostren ua alta robustesa en el disseny del pipeline, especialment pel que fa a les etapes de localització i alineació. L'assoliment d'una \textit{taxa d'encert parcial del 98\%} (106 de 108 imatges) confirma l'eficàcia dels filtres geomètrics. La inclusió del mecanisme de recuperació per inversió de color ens ha permès salvar situacions complexes de contrast i il·luminació que d'altra manera haurien resultat errors.
+
+D'altra banda, creiem que la nostra \textit{taxa d'encert del 59\%} és millorable, començant per la segmentació, on per decisions de disseny en fases anterior, hem tingut que prendre decisions sobre com segmentar i que deixar com a possible error. Per judici visual, hem calculat que tenim un 87\% de les imatges totals correctament segmentades, el qual ha condicionat diverses matrícules que podrien haver sigut correctes.
+
+De cara al classificador de caràcters, també ens ha perjudicat greument la baixa resolució de les imatges, les quals no hem pogut classificar correctament en casos com els mencionats a \ref{tab:tab_RESERR}.
+
+Amb l'objectiu de millorar el sistema en un futur, creiem que s'haurien d'implementar les següents estratègies:
+\begin{itemize}
+    \item \textbf{Mida matrícula}: Donar més marge a les matrícules passades a la segmentació per no tindre problemes al netejar vores ni extreure soroll i millorar les operacions morfològiques.
+    \item \textbf{Post-Processament basat en sintaxis}: Si coneixem els països d'origen de les matrícules, la classificació d'aquestes i aplicar regles segons el text pot ajudar. En el nostre cas, moltes matrícules seguien un patró i podríem solucionar aproximadament el 60\% d'errors de confusió "0$\rightarrow$O".
+    \item \textbf{Augment de dades del classificador}: Estendre el dataset d'entrenament del classificador amb caràcters degradats, amb soroll i deformats.
+\end{itemize}
