@@ -1,16 +1,9 @@
 # Fdb version 4
-<<<<<<< HEAD
-["pdflatex"] 1781024233.79824 "c:/Users/Eric/Documents/UPC/4to/VC/Projecte/vc-proj-final/docs/report/report.tex" "report.pdf" "report" 1781024235.97006 0
+["pdflatex"] 1781024561.20413 "c:/Users/Eric/Documents/UPC/4to/VC/Projecte/vc-proj-final/docs/report/report.tex" "report.pdf" "report" 1781024563.37671 0
   "c:/Users/Eric/Documents/UPC/4to/VC/Projecte/vc-proj-final/docs/report/report.tex" 1781024041 3593 dcb85013e4f1ca17e533427be03b97a2 ""
   "c:/texlive/2026/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc" 1773770163 2900 1537cc8184ad1792082cd229ecc269f4 ""
   "c:/texlive/2026/texmf-dist/fonts/map/fontname/texfonts.map" 1773770970 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "c:/texlive/2026/texmf-dist/fonts/tfm/jknappen/ec/tcbx1200.tfm" 1773770588 1536 c09172c8f235393e6235bb4758357c41 ""
-=======
-["pdflatex"] 1780949510.57272 "c:/Users/Eric/Documents/UPC/4to/VC/Projecte/vc-proj-final/docs/report/report.tex" "report.pdf" "report" 1780949513.85352 0
-  "c:/Users/Eric/Documents/UPC/4to/VC/Projecte/vc-proj-final/docs/report/report.tex" 1780825582 3593 dcb85013e4f1ca17e533427be03b97a2 ""
-  "c:/texlive/2026/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc" 1773770163 2900 1537cc8184ad1792082cd229ecc269f4 ""
-  "c:/texlive/2026/texmf-dist/fonts/map/fontname/texfonts.map" 1773770970 3524 cb3e574dea2d1052e39280babc910dc8 ""
->>>>>>> origin/OCR
   "c:/texlive/2026/texmf-dist/fonts/tfm/jknappen/ec/tcrm1200.tfm" 1773770588 1536 74b7293ec3713bb7fdca8dd1bd1f469c ""
   "c:/texlive/2026/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1773769380 1004 54797486969f23fa377b128694d548df ""
   "c:/texlive/2026/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex8.tfm" 1773769380 988 bdf658c3bfc2d96d3c8b02cfc1c94c20 ""
@@ -38,10 +31,7 @@
   "c:/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb" 1773769380 32569 5e5ddc8df908dea60932f3c484a54c0d ""
   "c:/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb" 1773769380 36118 fad905eba93cff5bce1e185fe980a177 ""
   "c:/texlive/2026/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb" 1773769380 24252 1e4e051947e12dfb50fee0b7f4e26e3a ""
-<<<<<<< HEAD
   "c:/texlive/2026/texmf-dist/fonts/type1/public/cm-super/sfbx1200.pfb" 1773770163 140176 d0f50dba675c56d445f84a32c1f93a79 ""
-=======
->>>>>>> origin/OCR
   "c:/texlive/2026/texmf-dist/fonts/type1/public/cm-super/sfrm1200.pfb" 1773770163 136101 b18d10b3436f8cb0cd04046deb340fe7 ""
   "c:/texlive/2026/texmf-dist/tex/context/base/mkii/supp-pdf.mkii" 1773772526 71627 94eb9990bed73c364d7f53f960cc8c5b ""
   "c:/texlive/2026/texmf-dist/tex/generic/babel-spanish/spanish.ldf" 1773769735 26965 3b6d1655ad716f98e788b1fb9f2e87b8 ""
@@ -192,7 +182,8 @@
   "c:/texlive/2026/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1773775045 5618266 85c272d09f6df628d158699e137c8ff6 ""
   "c:/texlive/2026/texmf-var/web2c/pdftex/pdflatex.fmt" 1773775167 3636418 97ea88981ca42bad222a61dfb0303d16 ""
   "c:/texlive/2026/texmf.cnf" 1773775019 713 e69b156964470283e0530f5060668171 ""
-<<<<<<< HEAD
+  "images/confusionMatrixOCR.png" 1781024541 84886 2cbfa54970868f9cada4d3030bef2c70 ""
+  "images/confusionMatrixPlateClassifier.png" 1781024541 21675 f75ff14f9981f9acb05793b871e30543 ""
   "images/mat-GWAGEN.png" 1781024175 71825 85e5b526b36476187769af1cfddbe0a7 ""
   "images/mat-RK576AH.png" 1781024175 47841 3e9e050c530a43802e8fe19bd6984933 ""
   "images/mat-RK884AL.png" 1781024175 207799 125e542222408304d8b883a328973563 ""
@@ -200,43 +191,22 @@
   "images/mat-W053011.png" 1781024175 166190 a84429544c50fd55967801cdd8a96b03 ""
   "images/mat-WSQ3021.png" 1781024175 205215 51fc65b318c12f51cbb4909fd2047453 ""
   "images/pipeline.png" 1781024041 1203154 b412f6fec76f01cc38810f341f53d0ac ""
-  "report.aux" 1781024235 8063 0be7915141abc7b13957842d6fe9d70b "pdflatex"
-  "report.out" 1781024235 6203 5a1ba3fda0e6679677bbfe0997f7606c "pdflatex"
+  "report.aux" 1781024563 9715 f12ba8fc3253e83abeef740c57f41184 "pdflatex"
+  "report.out" 1781024563 8149 7f4b587c1b67d585664cdf48f8a4d478 "pdflatex"
   "report.tex" 1781024041 3593 dcb85013e4f1ca17e533427be03b97a2 ""
-  "report.toc" 1781024235 3429 e242338f9eae4431a1cc4b66a24f784f "pdflatex"
+  "report.toc" 1781024563 4377 c01a57fa9fc547846abf7daefb0d6029 "pdflatex"
   "sections/annexes.tex" 1781024041 264 dede8d440aac5a43371527d9c265aa85 ""
   "sections/finalResults.tex" 1781024175 6061 2c085c580a36d7c39fb82de92e0bb47d ""
   "sections/implementation.tex" 1781024041 358 3006fa287a9b1ae373b5026c95902e44 ""
   "sections/intro.tex" 1781024041 1015 5426e664a8c15d56dfb806ae7a7daaf0 ""
   "sections/projectDescription.tex" 1781024041 3507 dfcb966e52d926a5ea7052dcdd78870b ""
   "sections/subsections/alignment.tex" 1781024175 2566 a1cbf4d84b5b849ee3a39537be5f5f19 ""
-  "sections/subsections/classifier.tex" 1781024167 127 3ac708e764d5ee6dcfed70f1557d1b66 ""
+  "sections/subsections/classifier.tex" 1781024541 7378 79f9e98b0a06da91f83d349c0edcd056 ""
   "sections/subsections/flowAndOutput.tex" 1781024233 2893 24f5d26f19c2d3e2e50ab97d9cb36ad5 ""
-  "sections/subsections/ocr.tex" 1781024167 102 5e95ffd870f930298b0893ceca31e290 ""
-  "sections/subsections/plateCandidatesCleaning.tex" 1781024167 125 3327e61121bd2e5c0ba49b063cb9d8e8 ""
+  "sections/subsections/ocr.tex" 1781024541 6439 b721aa98c87148c5d06d15a7c6ac2743 ""
+  "sections/subsections/plateCandidatesCleaning.tex" 1781024541 4063 355a0d061678e6491628706a55e8cc9b ""
   "sections/subsections/preprocessing.tex" 1781024167 4976 5e66a9efa48d2280e67357197910e1d8 ""
   "sections/subsections/segmentation.tex" 1781024175 6073 215b189d5aafa4e1328856ead83e54af ""
-=======
-  "images/confusionMatrixOCR.png" 1780858048 84886 2cbfa54970868f9cada4d3030bef2c70 ""
-  "images/confusionMatrixPlateClassifier.png" 1780858048 21675 f75ff14f9981f9acb05793b871e30543 ""
-  "images/pipeline.png" 1780829944 1203154 b412f6fec76f01cc38810f341f53d0ac ""
-  "report.aux" 1780949513 6651 fc987d075880298dd3c1e4f6dcd97ec0 "pdflatex"
-  "report.out" 1780949513 7252 a1af44992d962e20e0824d9d3ed99fbb "pdflatex"
-  "report.tex" 1780825582 3593 dcb85013e4f1ca17e533427be03b97a2 ""
-  "report.toc" 1780949513 3892 42905e17426af1ac0b169917c03b62ff "pdflatex"
-  "sections/annexes.tex" 1780825372 264 dede8d440aac5a43371527d9c265aa85 ""
-  "sections/finalResults.tex" 1780825550 53 5647b668b29047689715e13f8b7d9fa9 ""
-  "sections/implementation.tex" 1780828491 358 3006fa287a9b1ae373b5026c95902e44 ""
-  "sections/intro.tex" 1780828361 1015 5426e664a8c15d56dfb806ae7a7daaf0 ""
-  "sections/projectDescription.tex" 1780830207 3507 dfcb966e52d926a5ea7052dcdd78870b ""
-  "sections/subsections/alignment.tex" 1780828498 136 6515303bfb838df6c40891dd3c5e68a6 ""
-  "sections/subsections/classifier.tex" 1780949508 7378 79f9e98b0a06da91f83d349c0edcd056 ""
-  "sections/subsections/flowAndOutput.tex" 1780826134 51 237727e7766842ba5cc6853a1d6ee489 ""
-  "sections/subsections/ocr.tex" 1780858048 6439 b721aa98c87148c5d06d15a7c6ac2743 ""
-  "sections/subsections/plateCandidatesCleaning.tex" 1780859383 4063 355a0d061678e6491628706a55e8cc9b ""
-  "sections/subsections/preprocessing.tex" 1780858048 140 8e908657441cb3961024e20d03fdefd1 ""
-  "sections/subsections/segmentation.tex" 1780826313 125 09a071718e0acbc1e4a258162f36210e ""
->>>>>>> origin/OCR
   (generated)
   "report.aux"
   "report.log"

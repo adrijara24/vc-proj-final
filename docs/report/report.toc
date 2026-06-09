@@ -6,72 +6,43 @@
 \contentsline {subsection}{\numberline {3.1}Preprocessament i Generació de Candidats}{3}{subsection.3.1}%
 \contentsline {subsubsection}{\numberline {3.1.1}Funcions Implementades}{3}{subsubsection.3.1.1}%
 \contentsline {subsubsection}{\numberline {3.1.2}Decisions de Disseny}{3}{subsubsection.3.1.2}%
-<<<<<<< HEAD
 \contentsline {subsection}{\numberline {3.2}Classificador de Matrícules}{5}{subsection.3.2}%
-\contentsline {subsubsection}{\numberline {3.2.1}Funcions Implementades}{5}{subsubsection.3.2.1}%
-\contentsline {subsubsection}{\numberline {3.2.2}Decisions de Disseny}{5}{subsubsection.3.2.2}%
-\contentsline {subsection}{\numberline {3.3}Neteja de Candidats Finals}{5}{subsection.3.3}%
-\contentsline {subsubsection}{\numberline {3.3.1}Funcions Implementades}{5}{subsubsection.3.3.1}%
-\contentsline {subsubsection}{\numberline {3.3.2}Decisions de Disseny}{5}{subsubsection.3.3.2}%
-\contentsline {subsection}{\numberline {3.4}Alineació de la Matrícula Candidata}{5}{subsection.3.4}%
-\contentsline {subsubsection}{\numberline {3.4.1}Funcions Implementades}{5}{subsubsection.3.4.1}%
-\contentsline {subsubsection}{\numberline {3.4.2}Decisions de Disseny}{5}{subsubsection.3.4.2}%
-\contentsline {subsection}{\numberline {3.5}Segmentació de Caràcters}{6}{subsection.3.5}%
-\contentsline {subsubsection}{\numberline {3.5.1}Funcions Implementades}{6}{subsubsection.3.5.1}%
-\contentsline {subsubsection}{\numberline {3.5.2}Decisions de Disseny}{6}{subsubsection.3.5.2}%
-\contentsline {subsection}{\numberline {3.6}OCR}{8}{subsection.3.6}%
-\contentsline {subsubsection}{\numberline {3.6.1}Funcions Implementades}{8}{subsubsection.3.6.1}%
-\contentsline {subsubsection}{\numberline {3.6.2}Decisions de Disseny}{8}{subsubsection.3.6.2}%
-\contentsline {subsection}{\numberline {3.7}Resum del Flux i generació d'output}{8}{subsection.3.7}%
-\contentsline {subsubsection}{\numberline {3.7.1}Paràmetres de control}{8}{subsubsection.3.7.1}%
-\contentsline {subsubsection}{\numberline {3.7.2}Pipeline}{9}{subsubsection.3.7.2}%
-\contentsline {section}{\numberline {4}Resultats Finals}{9}{section.4}%
-\contentsline {subsection}{\numberline {4.1}Extractes de la sortida}{10}{subsection.4.1}%
-\contentsline {subsubsection}{\numberline {4.1.1}Anàlisi de Confusions Tipogràfiques}{10}{subsubsection.4.1.1}%
-\contentsline {subsection}{\numberline {4.2}Exemples d'Execució}{11}{subsection.4.2}%
-\contentsline {subsection}{\numberline {4.3}Conclusió}{12}{subsection.4.3}%
-\contentsline {section}{\numberline {5}Annexos}{13}{section.5}%
-\contentsline {subsection}{\numberline {5.1}Codi Font}{13}{subsection.5.1}%
-\contentsline {subsubsection}{\numberline {5.1.1}main}{13}{subsubsection.5.1.1}%
-\contentsline {subsubsection}{\numberline {5.1.2}candidates\_detection}{13}{subsubsection.5.1.2}%
-\contentsline {subsubsection}{\numberline {5.1.3}plate\_classifier}{13}{subsubsection.5.1.3}%
-\contentsline {subsubsection}{\numberline {5.1.4}character\_segmentation}{13}{subsubsection.5.1.4}%
-\contentsline {subsubsection}{\numberline {5.1.5}dataset\_generation}{13}{subsubsection.5.1.5}%
-\contentsline {subsubsection}{\numberline {5.1.6}ocr\_classifier}{13}{subsubsection.5.1.6}%
-=======
-\contentsline {subsection}{\numberline {3.2}Classificador de Matrícules}{3}{subsection.3.2}%
-\contentsline {subsubsection}{\numberline {3.2.1}Generació del Dataset}{3}{subsubsection.3.2.1}%
-\contentsline {subsubsection}{\numberline {3.2.2}Funcions Implementades}{4}{subsubsection.3.2.2}%
-\contentsline {subsubsection}{\numberline {3.2.3}Decisions de Disseny}{4}{subsubsection.3.2.3}%
-\contentsline {subsubsection}{\numberline {3.2.4}Resultats i rendiment del classificador}{5}{subsubsection.3.2.4}%
-\contentsline {paragraph}{\numberline {3.2.4.1}Errors trobats}{6}{paragraph.3.2.4.1}%
-\contentsline {subsection}{\numberline {3.3}Neteja de Candidats Finals}{6}{subsection.3.3}%
-\contentsline {subsubsection}{\numberline {3.3.1}Funcions Implementades}{6}{subsubsection.3.3.1}%
-\contentsline {subsubsection}{\numberline {3.3.2}Funcionament del NMS}{7}{subsubsection.3.3.2}%
-\contentsline {subsubsection}{\numberline {3.3.3}Mètriques de solapament i Criteris de Supressió}{7}{subsubsection.3.3.3}%
-\contentsline {subsubsection}{\numberline {3.3.4}Decisions de Disseny i Resultats}{7}{subsubsection.3.3.4}%
-\contentsline {subsection}{\numberline {3.4}Alineació de la Matrícula Candidata}{8}{subsection.3.4}%
-\contentsline {subsubsection}{\numberline {3.4.1}Funcions Implementades}{8}{subsubsection.3.4.1}%
-\contentsline {subsubsection}{\numberline {3.4.2}Decisions de Disseny}{8}{subsubsection.3.4.2}%
-\contentsline {subsection}{\numberline {3.5}Segmentació de Caràcters}{8}{subsection.3.5}%
-\contentsline {subsubsection}{\numberline {3.5.1}Funcions Implementades}{8}{subsubsection.3.5.1}%
-\contentsline {subsubsection}{\numberline {3.5.2}Decisions de Disseny}{8}{subsubsection.3.5.2}%
-\contentsline {subsection}{\numberline {3.6}OCR}{8}{subsection.3.6}%
-\contentsline {subsubsection}{\numberline {3.6.1}Dataset Utilitzat}{8}{subsubsection.3.6.1}%
-\contentsline {subsubsection}{\numberline {3.6.2}Funcions Implementades}{8}{subsubsection.3.6.2}%
-\contentsline {subsubsection}{\numberline {3.6.3}Decisions de Disseny*}{9}{subsubsection.3.6.3}%
-\contentsline {subsubsection}{\numberline {3.6.4}Alternatives Descartades*}{10}{subsubsection.3.6.4}%
-\contentsline {subsubsection}{\numberline {3.6.5}Resultats i rendiment del classificador}{10}{subsubsection.3.6.5}%
-\contentsline {subsubsection}{\numberline {3.6.6}Errors trobats*}{10}{subsubsection.3.6.6}%
-\contentsline {subsection}{\numberline {3.7}Resum del Flux i generació d'output}{11}{subsection.3.7}%
-\contentsline {section}{\numberline {4}Resultats Finals}{11}{section.4}%
-\contentsline {subsection}{\numberline {4.1}Exemples}{11}{subsection.4.1}%
-\contentsline {section}{\numberline {5}Annexos}{11}{section.5}%
-\contentsline {subsection}{\numberline {5.1}Codi Font}{11}{subsection.5.1}%
-\contentsline {subsubsection}{\numberline {5.1.1}main}{11}{subsubsection.5.1.1}%
-\contentsline {subsubsection}{\numberline {5.1.2}candidates\_detection}{11}{subsubsection.5.1.2}%
-\contentsline {subsubsection}{\numberline {5.1.3}plate\_classifier}{11}{subsubsection.5.1.3}%
-\contentsline {subsubsection}{\numberline {5.1.4}character\_segmentation}{11}{subsubsection.5.1.4}%
-\contentsline {subsubsection}{\numberline {5.1.5}dataset\_generation}{11}{subsubsection.5.1.5}%
-\contentsline {subsubsection}{\numberline {5.1.6}ocr\_classifier}{11}{subsubsection.5.1.6}%
->>>>>>> origin/OCR
+\contentsline {subsubsection}{\numberline {3.2.1}Generació del Dataset}{5}{subsubsection.3.2.1}%
+\contentsline {subsubsection}{\numberline {3.2.2}Funcions Implementades}{5}{subsubsection.3.2.2}%
+\contentsline {subsubsection}{\numberline {3.2.3}Decisions de Disseny}{6}{subsubsection.3.2.3}%
+\contentsline {subsubsection}{\numberline {3.2.4}Resultats i rendiment del classificador}{7}{subsubsection.3.2.4}%
+\contentsline {paragraph}{\numberline {3.2.4.1}Errors trobats}{8}{paragraph.3.2.4.1}%
+\contentsline {subsection}{\numberline {3.3}Neteja de Candidats Finals}{8}{subsection.3.3}%
+\contentsline {subsubsection}{\numberline {3.3.1}Funcions Implementades}{8}{subsubsection.3.3.1}%
+\contentsline {subsubsection}{\numberline {3.3.2}Funcionament del NMS}{8}{subsubsection.3.3.2}%
+\contentsline {subsubsection}{\numberline {3.3.3}Mètriques de solapament i Criteris de Supressió}{9}{subsubsection.3.3.3}%
+\contentsline {subsubsection}{\numberline {3.3.4}Decisions de Disseny i Resultats}{9}{subsubsection.3.3.4}%
+\contentsline {subsection}{\numberline {3.4}Alineació de la Matrícula Candidata}{9}{subsection.3.4}%
+\contentsline {subsubsection}{\numberline {3.4.1}Funcions Implementades}{9}{subsubsection.3.4.1}%
+\contentsline {subsubsection}{\numberline {3.4.2}Decisions de Disseny}{10}{subsubsection.3.4.2}%
+\contentsline {subsection}{\numberline {3.5}Segmentació de Caràcters}{10}{subsection.3.5}%
+\contentsline {subsubsection}{\numberline {3.5.1}Funcions Implementades}{10}{subsubsection.3.5.1}%
+\contentsline {subsubsection}{\numberline {3.5.2}Decisions de Disseny}{11}{subsubsection.3.5.2}%
+\contentsline {subsection}{\numberline {3.6}OCR}{13}{subsection.3.6}%
+\contentsline {subsubsection}{\numberline {3.6.1}Dataset Utilitzat}{13}{subsubsection.3.6.1}%
+\contentsline {subsubsection}{\numberline {3.6.2}Funcions Implementades}{13}{subsubsection.3.6.2}%
+\contentsline {subsubsection}{\numberline {3.6.3}Decisions de Disseny*}{14}{subsubsection.3.6.3}%
+\contentsline {subsubsection}{\numberline {3.6.4}Alternatives Descartades*}{15}{subsubsection.3.6.4}%
+\contentsline {subsubsection}{\numberline {3.6.5}Resultats i rendiment del classificador}{15}{subsubsection.3.6.5}%
+\contentsline {subsubsection}{\numberline {3.6.6}Errors trobats*}{15}{subsubsection.3.6.6}%
+\contentsline {subsection}{\numberline {3.7}Resum del Flux i generació d'output}{16}{subsection.3.7}%
+\contentsline {subsubsection}{\numberline {3.7.1}Paràmetres de control}{16}{subsubsection.3.7.1}%
+\contentsline {subsubsection}{\numberline {3.7.2}Pipeline}{16}{subsubsection.3.7.2}%
+\contentsline {section}{\numberline {4}Resultats Finals}{17}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Extractes de la sortida}{17}{subsection.4.1}%
+\contentsline {subsubsection}{\numberline {4.1.1}Anàlisi de Confusions Tipogràfiques}{17}{subsubsection.4.1.1}%
+\contentsline {subsection}{\numberline {4.2}Exemples d'Execució}{18}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Conclusió}{19}{subsection.4.3}%
+\contentsline {section}{\numberline {5}Annexos}{20}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Codi Font}{20}{subsection.5.1}%
+\contentsline {subsubsection}{\numberline {5.1.1}main}{20}{subsubsection.5.1.1}%
+\contentsline {subsubsection}{\numberline {5.1.2}candidates\_detection}{20}{subsubsection.5.1.2}%
+\contentsline {subsubsection}{\numberline {5.1.3}plate\_classifier}{20}{subsubsection.5.1.3}%
+\contentsline {subsubsection}{\numberline {5.1.4}character\_segmentation}{20}{subsubsection.5.1.4}%
+\contentsline {subsubsection}{\numberline {5.1.5}dataset\_generation}{20}{subsubsection.5.1.5}%
+\contentsline {subsubsection}{\numberline {5.1.6}ocr\_classifier}{20}{subsubsection.5.1.6}%
