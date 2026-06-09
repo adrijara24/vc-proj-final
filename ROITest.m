@@ -15,8 +15,8 @@ showSegments = true;        % Muestra segmentación de caracteres dentro de la R
 
 loadDataset = false;
 useTxtFiles = true;
-fileFactor = 1.0;
-showVisuals = true;
+fileFactor = 1;
+showVisuals = false;
 
 % Ruta del dataset
 datasetPath = fullfile(pwd, 'Datasets', 'Dataset');
@@ -118,7 +118,7 @@ for k = 1:numel(images)
         match = 0;
     
         [aligned, BB] = alignPlate(plate, candidates(i,:));
-        aligned = imresize(aligned, 3);
+        aligned = imresize(aligned, 2);
         blobs = segm(aligned);
 
         [plateText, charLabels] = recognize_plate(aligned, blobs);
@@ -126,7 +126,7 @@ for k = 1:numel(images)
 
         if size(blobs,1) <= 3
             [aligned, BB] = alignPlate(255-plate, candidates(i,:));
-            aligned = imresize(aligned, 3);
+            aligned = imresize(aligned, 2);
             blobs = segm(aligned);
             [plateText, charLabels] = recognize_plate(aligned, blobs);
             %fprintf("Matrícula detectada: %s\n", plateText);

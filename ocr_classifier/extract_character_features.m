@@ -13,7 +13,7 @@ function features = extract_character_features(img, imageSize)
     bin = imclose(bin, se);
     bin = bwareaopen(bin, 5);
     
-    % 1. HOG con celda más fina
+    % 1. HOG 
     hog_feature = extractHOGFeatures(img, 'CellSize', [4 4]);
     
     % 2. Density global
@@ -37,7 +37,7 @@ function features = extract_character_features(img, imageSize)
     % 6. Zoning asimétrico 6x3 
     zoningF2 = zoningFeatures(bin, 6, 3);
 
-    % 7. Crossing numbers por fila (distingue 3 vs E, 2 vs Z)
+    % 7. Crossing numbers por fila
     crossings = zeros(1, targetLen);
     binResized = imresize(bin, [targetLen, targetLen]) > 0.5;
     for row = 1:targetLen
@@ -46,7 +46,6 @@ function features = extract_character_features(img, imageSize)
     end
     crossings = crossings / (max(crossings) + eps);
     
-    % VECTOR FINAL
     features = [
         hog_feature, ...
         density, ...

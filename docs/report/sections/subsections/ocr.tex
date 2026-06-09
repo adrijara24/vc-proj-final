@@ -29,9 +29,9 @@ A part d'aquestes funcions principals, s'ha implementat el script que gestiona l
     \item \texttt{train\_ocr\_classifier}: script que carrega el dataset d'OCR, divideix els conjutns de features y labels en conjunts de entrenament (80\%) i test (20\%), extreu les característiques de cada imatge amb la funció \texttt{extract\_character\_features}  i entrena un model SVM amb kernel lineal. Finalment calcula i mostra les mètriques d'avaluació (accuracy i matriu de confusió) sobre el conjunt de test.
 \end{itemize}
 
-\subsubsection{Decisions de Disseny*}
+\subsubsection{Decisions de Disseny}
 
-Primer de tot, respecte la selecció del dataset d'entrenament, s'han utilitzat diverses alternatives al llarg del procés. Inicialment es va utilitzar un altre datset (també d'internet) el qual contenia imatges de caràcters directament obtinguit de matrícules reals. Tot i això, es van observar diversos problemes després de fer les primeres proves. Les causes indentificades van ser que totes les imatges (de cada caracter) eren de la mateixa tipologia, per tant, el model no era capaç de generalitzar a altres fonts d'imatges de forma correcta. A més, moltes estaven rotades o deformades, i en el nostre cas això perjudicava més que ajudava ja que en el nostre pipeline es realitza una etapa d'alineació prèvia a la segmentació, per tant, els caracters sempre apareixien rectes (sense rotacions exajerades). Després de descartar aquest dataset, es va optar per utilitzar el datset d'OCR clàssic mencionat anteriorment. 
+Primer de tot, respecte la selecció del dataset d'entrenament, s'han utilitzat diverses alternatives al llarg del procés. Inicialment es va utilitzar un altre datset (també d'internet) el qual contenia imatges de caràcters directament obtinguit de matrícules reals. Tot i això, es van observar diversos problemes després de fer les primeres proves. Les causes indentificades van ser que totes les imatges (de cada caracter) eren de la mateixa tipografia, per tant, el model no era capaç de generalitzar a altres fonts d'imatges de forma correcta. A més, moltes estaven rotades o deformades, i en el nostre cas això perjudicava més que ajudava ja que en el nostre pipeline es realitza una etapa d'alineació prèvia a la segmentació, per tant, els caracters sempre apareixien rectes (sense rotacions exajerades). Després de descartar aquest dataset, es va optar per utilitzar el datset d'OCR clàssic mencionat anteriorment. 
 
 \
 
@@ -48,12 +48,27 @@ Per a la representació dels caràcters s'han combinat múltiples descriptors am
     \item \textbf{Zoning 4x4 i 6x3}: divisió de la imatge en regions per calcular densitat local, aportant informació espacial sobre la distribució dels traços.
     
     \item \textbf{Crossing numbers}: nombre de transicions entre fons i primer pla per fila, útil per distingir caràcters amb estructures similars.
-    \item etc. Por determinar
 \end{itemize}
+
+Inicialment només es van utilitzar els descriptors HOG però però es va observar que el model tenia dificultats per diferenciar entre caràcters amb formes similars (per exemple, 0 i O, o 1 i I). Per això es van afegir tots els descriptors addicionals de cop, per intentar aportar més informació i compenasar la dimensionalitat de les característiques HOG.
+
+\
 
 Totes les imatges es redimensionen a una mida fixa de 32x32 píxels abans de l'extracció de característiques per garantir consistència entre mostres.
 
-\subsubsection{Alternatives Descartades*}
+\subsubsection{Alternatives Descartades}
+
+Durant el procés d'implementació del classificador OCR es van provar diverses alternatives que finalment es van descartar per diferents motius:
+
+\begin{itemize}
+    \item \textbf{Augmentar la mida de les imatges}: es va considerar redimensionar les imatges a una mida més gran (per exemple, 64x64) per capturar més detalls, però es va descartar aquesta opció ja que va incrementar significativament el temps d'entrenament i no va aportar millores substancials en el rendiment del model.
+    
+    \item \textbf{Dataset amb caràcters de matrícules reals}: com s'ha mencionat anteriorment, es va provar un dataset amb imatges de caràcters obtinguts directament de matrícules reals, però es va descartar degut a la falta de varietat en les tipografies i a la presència de rotacions i deformacions que no eren representatives del nostre pipeline.
+    \item 
+    \item \textbf{Augmentar la mida del datset}: es va considerar fusionar diversos datasets per obtenir una major varietat de caràcters i tipografies, però no va resultar efectiu. 
+    \item 
+    \item \textbf{Finestra de 8x8 en HOG}: es va provar utilitzar una finestra de 8x8 píxels per a l'extracció de característiques HOG, però es va observar que aquesta configuració no capturava suficients detalls dels caràcters.    
+\end{itemize}
 
 \subsubsection{Resultats i rendiment del classificador}
 
@@ -71,13 +86,3 @@ El rendiment del model s'ha avaluat utilitzant un conjunt de test independent (2
 
 Com es pot observar a la matriu de confusió, el model té una bona capacitat de discriminació entre les diferents classes de caràcters, tot i que hi han casos concrets on li costa diferenciar depèn de quin caràcter. On més es pot identificar aquest problema és entre el 0 i la O, amb una quantitat considerable de confusions. Els demès errors es distribueixen de forma més dispersa i puntual. 
 
-\subsubsection{Errors trobats*}
-
-Tot i haver obtingut un bon rendiment amb el model de test, en les proves reals realitzades (conjuntament amb tot el pipeline) s'han detectat diversos errors de reconeixement. 
-
-Les lletres més conflictives han sigut: 
-
-\begin{itemize}
-    \item \textbf{0 vs O}: com s'ha mencionat anteriorment, el model té dificultats per diferenciar entre el número 0 i la lletra O, especialment quan les matrícules tenen una tipografia on aquests símbols són molt similars.
-    \item \textbf{W vs H}: 
-\end{itemize}

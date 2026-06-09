@@ -1,7 +1,7 @@
 
 \section{Resultats Finals}
 En aquest apartat presentem i analitzem els resultats globals obtinguts en executar el \textit{pipeline} de detecció i reconeixement de matrícules sobre el dataset de prova, el qual compta amb un total de 108 imatges.
-El sistema ha assolit ua \textit{tasa d'encert} del 59\% (64 imatges sobre el total) i una \textit{tasa d'encert parcial} (3 caràcters o més) del 98\% (42 imatges sobre el total). Únicament s'han registrat 2 errors totals.
+El sistema ha assolit ua \textit{tasa d'encert} del 63\% (68 imatges sobre el total) i una \textit{tasa d'encert parcial} (3 caràcters o més) del 98\% (38 imatges sobre el total). Únicament s'han registrat 2 errors totals.
 \subsection{Extractes de la sortida}    
 Aquí podem veure un extracte de la sortida final. Veiem els resultats que ja hem comentat. Les imatges que donen error han fallat en algun punt de la \textit{Fase 1: Detecció i filtratge de ROIs}.
 \begin{verbatim}
@@ -9,11 +9,11 @@ Aquí podem veure un extracte de la sortida final. Veiem els resultats que ja he
      RESULTADOS FINALES      
 Imagenes evaluadas: 108
 ===============================
-Iguales: 64
-Parciales: 42
+Iguales: 68
+Parciales: 38
 Errores: 2
 ===============================
-Tasa de acierto: 59%
+Tasa de acierto: 63%
 Tasa de acierto parcial: 98%
 \end{verbatim}
 \subsubsection{Anàlisi de Confusions Tipogràfiques}
@@ -30,15 +30,15 @@ Afegim una taula de referència amb els errors més repetits, obviant els errors
     \begin{tabular}{|c|c|c|}
     \hline
          \textbf{Caràcter Real} & \textbf{Caràcter Detectat} & \textbf{Nombre de vegades}\\ \hline
-         \texttt{O} & \texttt{0} & 9 \\ \hline
+         \texttt{O} & \texttt{0} & 7 \\ \hline
          \texttt{M} & \texttt{N} & 5 \\ \hline
-         \texttt{W} & \texttt{H} & 5 \\ \hline
-         \texttt{0} & \texttt{Q} & 4 \\ \hline
-         \texttt{8} & \texttt{B} & 4 \\ \hline
-         \texttt{0} & \texttt{D} & 2 \\ \hline
+         \texttt{0} & \texttt{Q} & 5 \\ \hline
+         \texttt{W} & \texttt{H} & 4 \\ \hline
+         \texttt{8} & \texttt{B} & 3 \\ \hline
+         \texttt{O} & \texttt{Q} & 3 \\ \hline
+         \texttt{W} & \texttt{H} & 3 \\ \hline
          \texttt{A} & \texttt{N} & 2 \\ \hline
-         \texttt{M} & \texttt{H} & 2 \\ \hline
-         \texttt{O} & \texttt{Q} & 2 \\ \hline
+         \texttt{W} & \texttt{N} & 2 \\ \hline
          \texttt{V} & \texttt{Y} & 2 \\ \hline
     \end{tabular}
     \caption{Confusions tipogràfiques més significatives}
@@ -75,7 +75,7 @@ A continuació podem observar quatre escenaris representatius del comportament d
 \subsection{Conclusió}
 Com a conclusió d'aquesta fase d'avaluació, els resultats obtinguts demostren ua alta robustesa en el disseny del pipeline, especialment pel que fa a les etapes de localització i alineació. L'assoliment d'una \textit{taxa d'encert parcial del 98\%} (106 de 108 imatges) confirma l'eficàcia dels filtres geomètrics. La inclusió del mecanisme de recuperació per inversió de color ens ha permès salvar situacions complexes de contrast i il·luminació que d'altra manera haurien resultat errors.
 
-D'altra banda, creiem que la nostra \textit{taxa d'encert del 59\%} és millorable, començant per la segmentació, on per decisions de disseny en fases anterior, hem tingut que prendre decisions sobre com segmentar i que deixar com a possible error. Per judici visual, hem calculat que tenim un 87\% de les imatges totals correctament segmentades, el qual ha condicionat diverses matrícules que podrien haver sigut correctes.
+D'altra banda, creiem que la nostra \textit{taxa d'encert del 63\%} és millorable, començant per la segmentació, on per decisions de disseny en fases anterior, hem tingut que prendre decisions sobre com segmentar i que deixar com a possible error. Per judici visual, hem calculat que tenim un 87\% de les imatges totals correctament segmentades, el qual ha condicionat diverses matrícules que podrien haver sigut correctes.
 
 De cara al classificador de caràcters, també ens ha perjudicat greument la baixa resolució de les imatges, les quals no hem pogut classificar correctament en casos com els mencionats a \ref{tab:tab_RESERR}.
 
