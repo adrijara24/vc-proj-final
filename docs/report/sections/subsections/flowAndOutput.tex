@@ -5,7 +5,7 @@ En aquest apartat resumim el programa principal, els seus paràmetres de control
 \subsubsection{Paràmetres de control}
 A l'inici del programa es poden trobar les següents variables de control:
 \begin{itemize}
-    \item \textbf{loadDataset}: Variable de control per carregar directament les imatges de la carpeta \texttt{"Datasets/Dataset"}. \texttt{useTxtFiles} te preferència sobre aquesta variable, i la informació final és incompleta al no tindre dades dels arxius del ground truth.}
+    \item \textbf{loadDataset}: Variable de control per carregar directament les imatges de la carpeta \texttt{"Datasets/Dataset"}. \texttt{useTxtFiles} te preferència sobre aquesta variable, i la informació final és incompleta al no tindre dades dels arxius del ground truth.
     \item \textbf{useTxtFiles}: Carrega els arxius ".txt" de la carpeta \texttt{"Datasets/Dataset"}. Permet extreure dades d'avaluació segons les posicions. Es recomana deixar a true.
     \item \textbf{fileFactor}: Percentatge $[0.0, 1.0]$ d'arxius a carregar. Per els casos on només es vol executar una part petita del dataset.
     \item \textbf{showVisuals}: Variable per ensenyar les imatges resultants amb les ROI i la segmentació, o només sortida de consola.
