@@ -16,11 +16,10 @@ showSegments = true;        % Muestra segmentación de caracteres dentro de la R
 loadDataset = false;
 useTxtFiles = true;
 fileFactor = 1;
-showVisuals = false;
+showVisuals = true;
 
 % Ruta del dataset
 datasetPath = fullfile(pwd, 'Datasets', 'Dataset');
-
 
 % Lista de imagenes a procesar
 images = ["test_092.jpg","test_071.jpg","test_073.jpg","test_061.jpg","test_057.jpg","test_060.jpg","test_048.jpg","test_046.jpg","test_023.jpg","test_017.jpg","test_015.jpg","test_010.jpg","eu8.jpg","eu4.jpg","eu11.jpg",];
@@ -231,7 +230,7 @@ for k = 1:numel(images)
             errores = errores + 1;
             ver = "Error";
         end
-        fprintf("Name: %s\n", name);
+        fprintf("Archivo: %s\n", name);
         fprintf("Matrícula detectada: %s\n", bestPlate);
         fprintf("Matrícula esperada:  %s\n", expected);
         fprintf("Veredicto: %s\n", ver);
@@ -255,7 +254,7 @@ precParcial = ((exactas + parciales) / numel(images));
 fprintf("Tasa de acierto: %.0f%%\n", precision * 100);
 fprintf("Tasa de acierto parcial: %.0f%%\n",  precParcial * 100);
 
-% --- RESUMEN DE CONFUSIONES ---
+% RESUMEN DE CONFUSIONES 
 if ~isempty(confusionLog)
     % Agrupa y cuenta cada par (real -> detectado)
     pares = cellfun(@(x) sprintf('%s->%s', x{1}, x{2}), confusionLog, 'UniformOutput', false);

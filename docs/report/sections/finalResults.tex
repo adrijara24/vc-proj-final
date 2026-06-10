@@ -46,31 +46,74 @@ Afegim una taula de referència amb els errors més repetits, obviant els errors
 \end{table}
 
 \subsection{Exemples d'Execució}
-A continuació podem observar quatre escenaris representatius del comportament del sistema durant la fase d'avaluació
+A continuació podem observar tres escenaris respresentatius del funcionament del sistema. 
+
+\ 
+
+*Nota: les rois de color verd representen el ground truth i les de color vermell les trobades pel nostre sistema. 
+
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\linewidth]{images/mat-GWAGEN.png}
-    \caption{Cas correcte}
+    \includegraphics[width=\linewidth]{images/result_positive1.png}
+    \caption{Cas correcte1}
     \label{fig:res_correct}
 \end{figure}
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\linewidth]{images/mat-RK896AO.png}
-    \caption{Error d'ambigüitat}
+    \includegraphics[width=0.8\linewidth]{images/result_positive11.png}
+    \caption{Caràcters detectats}
     \label{fig:res_ambiguity}
 \end{figure}
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\linewidth]{images/mat-RK576AH.png}
-    \caption{Error de segmentació}
+    \includegraphics[width=\linewidth]{images/result_positive2.png}
+    \caption{Cas correcte2}
     \label{fig:res_segment}
 \end{figure}
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\linewidth]{images/mat-RK884AL.png}
-    \caption{Error total}
+    \includegraphics[width=0.8\linewidth]{images/result_positive21.png}
+    \caption{Caràcters detectats}
     \label{fig:res_error}
 \end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{images/result_positive3.png}
+    \caption{Cas correcte3 (doble detecció)}
+    \label{fig:res_segment}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{images/result_positive31.png}
+    \caption{Caràcters detectats}
+    \label{fig:res_error}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{images/result_positive32.png}
+    \caption{Caràcters detectats}
+    \label{fig:res_error}
+\end{figure}
+
+\subsection{Alguns Errors Trobats}
+
+A continuació es mostren alguns exemples d'imatges que han donat error.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{images/negative1.png}
+    \caption{Detecció extra incorrecta}
+    \label{fig:res_error}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\linewidth]{images/mat-RK884AL.png}
+    \caption{Error de detecció}
+    \label{fig:res_error}
+\end{figure}
+
 
 \subsection{Conclusió}
 Com a conclusió d'aquesta fase d'avaluació, els resultats obtinguts demostren ua alta robustesa en el disseny del pipeline, especialment pel que fa a les etapes de localització i alineació. L'assoliment d'una \textit{taxa d'encert parcial del 98\%} (106 de 108 imatges) confirma l'eficàcia dels filtres geomètrics. La inclusió del mecanisme de recuperació per inversió de color ens ha permès salvar situacions complexes de contrast i il·luminació que d'altra manera haurien resultat errors.

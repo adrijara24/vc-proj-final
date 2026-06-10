@@ -26,9 +26,9 @@ YTest  = imdsTest.Labels;
 
 imgSize = [32 32];
 
-% -------------------------
+
 % TRAIN FEATURES
-% -------------------------
+
 for i = 1:numTrain
 
     img = readimage(imdsTrain, i);
@@ -39,9 +39,9 @@ for i = 1:numTrain
 
 end
 
-% -------------------------
+
 % TEST FEATURES 
-% -------------------------
+
 for i = 1:numTest
 
     img = readimage(imdsTest, i);

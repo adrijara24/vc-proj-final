@@ -7,7 +7,6 @@ function features = extract_character_features(img, imageSize)
     img = imresize(img, imageSize);
     img = im2single(img);
 
-    % Binarización con Otsu + limpieza morfológica
     bin = imbinarize(img);
     se = strel('disk', 1);
     bin = imclose(bin, se);
