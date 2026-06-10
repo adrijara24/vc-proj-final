@@ -1,5 +1,5 @@
 # Fdb version 4
-["pdflatex"] 1781098637.5317 "c:/Users/Eric/Documents/UPC/4to/VC/Projecte/vc-proj-final/docs/report/report.tex" "report.pdf" "report" 1781098639.71708 0
+["pdflatex"] 1781100469.76291 "c:/Users/Eric/Documents/UPC/4to/VC/Projecte/vc-proj-final/docs/report/report.tex" "report.pdf" "report" 1781100472.00067 0
   "c:/Users/Eric/Documents/UPC/4to/VC/Projecte/vc-proj-final/docs/report/report.tex" 1781095779 3599 2d8dc677aadddac8ea54475d2f9e348c ""
   "c:/texlive/2026/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc" 1773770163 2900 1537cc8184ad1792082cd229ecc269f4 ""
   "c:/texlive/2026/texmf-dist/fonts/map/fontname/texfonts.map" 1773770970 3524 cb3e574dea2d1052e39280babc910dc8 ""
@@ -197,14 +197,14 @@
   "images/result_positive3.png" 1781097811 512249 dc3544b3452a54843973f60fd3136258 ""
   "images/result_positive31.png" 1781097823 42647 270c04c010ef6dd124d12957da10618f ""
   "images/result_positive32.png" 1781097965 26199 1e2d4d9694bbc346f24cdae1ac5db108 ""
-  "report.aux" 1781098639 10785 481fa12124430990bf60ad5a44a03607 "pdflatex"
-  "report.out" 1781098639 8162 8865031fff43c9ffce6733238363fa1d "pdflatex"
+  "report.aux" 1781100471 10785 282e21949068a3a2731493a0002359f3 "pdflatex"
+  "report.out" 1781100471 8162 8865031fff43c9ffce6733238363fa1d "pdflatex"
   "report.tex" 1781095779 3599 2d8dc677aadddac8ea54475d2f9e348c ""
-  "report.toc" 1781098639 4371 af0fa32169728ffff96814de9e579f1b "pdflatex"
-  "sections/annexes.tex" 1781024041 264 dede8d440aac5a43371527d9c265aa85 ""
-  "sections/finalResults.tex" 1781098636 7226 4433a4bbb30aab62371b5affdc2839e2 ""
+  "report.toc" 1781100471 4371 fc8c6d99ed2333bffa3f1c1bfc9a6f0d "pdflatex"
+  "sections/annexes.tex" 1781100214 29296 63e1dd340dd737cc7bf1e617f0ec2586 ""
+  "sections/finalResults.tex" 1781098651 7226 4433a4bbb30aab62371b5affdc2839e2 ""
   "sections/implementation.tex" 1781024041 358 3006fa287a9b1ae373b5026c95902e44 ""
-  "sections/intro.tex" 1781024041 1015 5426e664a8c15d56dfb806ae7a7daaf0 ""
+  "sections/intro.tex" 1781100468 1111 8379c9624ff7ca96dde31b53e416d9e4 ""
   "sections/projectDescription.tex" 1781024041 3507 dfcb966e52d926a5ea7052dcdd78870b ""
   "sections/subsections/alignment.tex" 1781095635 2519 b9a4f509409772fc58858e4e4cbc12f9 ""
   "sections/subsections/classifier.tex" 1781024541 7378 79f9e98b0a06da91f83d349c0edcd056 ""

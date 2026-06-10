@@ -5,12 +5,1242 @@
 
 \subsubsection{main}
 
+\begin{verbatim}
+
+% PIPELINE COMPLETO DE DETECCIÓN Y RECONOCIMIENTO DE MATRÍCULAS
+
+addpath(genpath(pwd));
+
+function image = cutImage(im, ROI)
+    image = imcrop(im, ROI);
+end
+
+
+% Flags para controlar la visualización y ejecución del sistema
+
+showSteps = false;      % Muestra pasos intermedios del detector de ROIs
+showSegments = true;        % Muestra segmentación de caracteres dentro de la ROI
+
+loadDataset = false;
+useTxtFiles = true;
+fileFactor = 1;
+showVisuals = true;
+
+% Ruta del dataset
+datasetPath = fullfile(pwd, 'Datasets', 'Dataset');
+
+% Lista de imagenes a procesar
+images = ["test_092.jpg","test_071.jpg","test_073.jpg","test_061.jpg","test_057.jpg","test_060.jpg","test_048.jpg","test_046.jpg","test_023.jpg","test_017.jpg","test_015.jpg","test_010.jpg","eu8.jpg","eu4.jpg","eu11.jpg",];
+
+% Carga del dataset
+if useTxtFiles
+    disp('Using txt');
+    files = dir(fullfile(datasetPath, '*.txt'));
+    images = [];
+    roisDataset = [];
+    platesDataset = [];
+    for f = 1:(numel(files) * fileFactor)
+        file = fullfile(datasetPath, files(f).name);
+        fid = fopen(file, 'r');
+        data = textscan(fid, '%s %d %d %d %d %s');
+        fclose(fid);
+
+        if ~isempty(data{1})
+            imgPath = fullfile(datasetPath, string(data(1)));
+            x = data{2};
+            y = data{3};
+            w = data{4};
+            h = data{5};
+            pl = string(data{6});
+            bb = [x, y, w, h];
+            images = [images(:); imgPath(:)];
+            roisDataset = [roisDataset; bb];
+            platesDataset = [platesDataset; pl];
+        end
+    end
+elseif loadDataset
+    images = [];
+    data = [
+        dir(fullfile(datasetPath, '*.jpg'));
+        dir(fullfile(datasetPath, '*.png'));
+        dir(fullfile(datasetPath, '*.jpeg'))
+    ];
+
+    images = fullfile({data.folder}, {data.name});
+    images = string(images);
+
+else 
+    images = fullfile(datasetPath, images);
+    images = string(images);
+end
+
+
+% Bucle principal de procesamiento
+exactas = 0;
+parciales = 0;
+errores = 0;
+
+confusionLog = {};
+
+for k = 1:numel(images)
+
+    % Lectura de la imagen actual
+    im = imread(images(k));
+    if useTxtFiles
+        expected = char(platesDataset(k));
+        bestMatch = 0;
+        bestPlate = "";
+    end
+
+    % FASE 1: DETECCIÓN DE POSIBLES MATRÍCULAS (ROIs)
+    candidates = getCandidates(im, false);
+    
+    % Clasificar todas las ROIs y recoger scores ANTES del NMS
+    scores = zeros(size(candidates, 1), 1);
+    validMask = false(size(candidates, 1), 1);
+    
+    for i = 1:size(candidates, 1)
+        crop = cutImage(im, candidates(i,:));
+        [isPlate, scores(i)] = classify_roi(crop);
+        validMask(i) = isPlate;
+    end
+    
+    % Quedarse solo con las que el clasificador acepta
+    candidates = candidates(validMask, :);
+    scores = scores(validMask);
+    
+    % NMS sobre las candidatas válidas
+    candidates = nms(candidates, scores, 0.45, 0.75);
+    
+    [~, name] = fileparts(images(k));
+    if showVisuals
+        og = figure('Name', name);
+        imshow(im), title(name);
+        hold on;
+    end
+    
+    % FASE 2: ALINEACIÓN Y SEGMENTACIÓN
+    for i = 1:size(candidates, 1)
+        plate = cutImage(im, candidates(i,:));
+        match = 0;
+    
+        [aligned, BB] = alignPlate(plate, candidates(i,:));
+        aligned = imresize(aligned, 2);
+        blobs = segm(aligned);
+
+        [plateText, charLabels] = recognize_plate(aligned, blobs);
+        %fprintf("Matrícula detectada: %s\n", plateText);
+
+        if size(blobs,1) <= 3
+            [aligned, BB] = alignPlate(255-plate, candidates(i,:));
+            aligned = imresize(aligned, 2);
+            blobs = segm(aligned);
+            [plateText, charLabels] = recognize_plate(aligned, blobs);
+            %fprintf("Matrícula detectada: %s\n", plateText);
+        end
+        %fprintf("Matrícula detectada: %s\n", plateText);
+        detectedCh = char(plateText);
+
+        if useTxtFiles
+            if strcmp(detectedCh,expected)
+                match = 2;
+            else
+                m = 0;
+                tmp = expected;
+                for c = 1:length(detectedCh)
+                    idx = strfind(tmp, detectedCh(c));
+                    if ~isempty(idx)
+                        m = m + 1;
+                        tmp(idx(1)) = [];
+                    end
+                end
+                if m >= 3
+                    match = 1;
+                end
+            end
+    
+            if match > bestMatch
+                bestMatch = match;
+                bestPlate = plateText;
+            end
+        end
+    
+        % Visualización
+
+        if showVisuals
+            figure(og);
+            if useTxtFiles
+                bbDataset = roisDataset(k, :);
+                rectangle('Position',bbDataset, 'EdgeColor', 'g', 'LineWidth', 2.5);
+            end
+
+            if ~isempty(BB)
+                x_pl = [BB(:,1); BB(1,1)];
+                y_pl = [BB(:,2); BB(1,2)];
+                line(x_pl, y_pl, 'Color', 'r', 'LineWidth', 2.5);
+        
+                if size(blobs,1) > 3 && showSegments
+                    figure, imshow(aligned), title('cropped image');
+                    hold on;
+                    for j = 1:size(blobs,1)
+                        bb = blobs(j,:);
+                        rectangle('Position', bb, ...
+                            'EdgeColor', 'r', ...
+                            'LineWidth', 2);
+                        text(bb(1)+bb(3)/2, ...
+                             bb(2)-5, ...
+                             char(charLabels(j)), ...
+                             'FontSize', 16, ...
+                             'FontWeight', 'bold', ...
+                             'Color', 'r', ...
+                             'HorizontalAlignment', 'center');
+                    end
+                    if showVisuals
+                        hold off;
+                    end
+                end
+            end
+        end
+    end
+
+    if showVisuals
+        figure(og);
+        hold off;
+    end
+
+    if useTxtFiles
+        if bestMatch == 2
+            exactas = exactas + 1;
+            ver = "Correcto";
+        elseif bestMatch == 1
+            parciales = parciales + 1;
+            ver = "Parcialmente correcto";
+
+            % Analisis de Confusiones
+            det = char(bestPlate);
+            exp = expected;
+            tmpExp = exp;
+            tmpDet = det;
+            % Elimina los caracteres que coinciden para quedarse solo con errores
+            for c = length(tmpDet):-1:1
+                idx = strfind(tmpExp, tmpDet(c));
+                if ~isempty(idx)
+                    tmpExp(idx(1)) = [];
+                    tmpDet(c) = [];
+                end
+            end
+            % Empareja lo que faltaba con lo que se detectó de más
+            nPairs = min(length(tmpExp), length(tmpDet));
+            for c = 1:nPairs
+                confusionLog{end+1} = {tmpExp(c), tmpDet(c)};
+            end
+        else
+            errores = errores + 1;
+            ver = "Error";
+        end
+        fprintf("Archivo: %s\n", name);
+        fprintf("Matrícula detectada: %s\n", bestPlate);
+        fprintf("Matrícula esperada:  %s\n", expected);
+        fprintf("Veredicto: %s\n", ver);
+        fprintf("=======================\n");
+    end
+    if ~showVisuals
+        close all hidden;
+    end
+end
+
+fprintf("\n===============================\n");
+fprintf("     RESULTADOS FINALES      \n");
+fprintf("Imagenes evaluadas: %d\n", numel(images));
+fprintf("===============================\n");
+fprintf("Iguales: %d\n", exactas);
+fprintf("Parciales: %d\n", parciales);
+fprintf("Errores: %d\n", errores);
+fprintf("===============================\n");
+precision = (exactas / numel(images));
+precParcial = ((exactas + parciales) / numel(images));
+fprintf("Tasa de acierto: %.0f%%\n", precision * 100);
+fprintf("Tasa de acierto parcial: %.0f%%\n",  precParcial * 100);
+
+% RESUMEN DE CONFUSIONES 
+if ~isempty(confusionLog)
+    % Agrupa y cuenta cada par (real -> detectado)
+    pares = cellfun(@(x) sprintf('%s->%s', x{1}, x{2}), confusionLog, 'UniformOutput', false);
+    [paresSorted, ~, ic] = unique(pares);
+    counts = accumarray(ic, 1);
+    [countsSorted, sortIdx] = sort(counts, 'descend');
+
+    fprintf("\n=== CONFUSIONES MÁS FRECUENTES ===\n");
+    fprintf("  Real -> Detectado   Veces\n");
+    fprintf("  --------------------------\n");
+    for i = 1:length(paresSorted)
+        fprintf("  %-18s  %d\n", paresSorted{sortIdx(i)}, countsSorted(i));
+    end
+    fprintf("===================================\n");
+end
+    
+\end{verbatim}
+
 \subsubsection{candidates\_detection}
+
+\begin{verbatim}
+
+function candidates = getCandidates(im, showSteps)
+    im = rgb2gray(im);
+    im = imadjust(im);
+    [szy, szx] = size(im);
+    if showSteps
+        figure, imshow(im), title('input image');
+    end
+    candidates = [];
+    
+    area = numel(im);
+    edges = edge(im,'sobel', 'vertical');
+    if showSteps
+        figure, imshow(edges), title('edges');
+    end
+    sizes = [
+        1, 5;
+        2, 12;
+        5, 20;
+        8, 30;
+        12, 45;
+        ceil(0.010 * szy), ceil(0.030 * szx);
+        ];
+    for si = 1:size(sizes, 1)
+        he = sizes(si, 1);
+        wi = sizes(si, 2);
+        EE = strel('rectangle', [he, wi]);
+        EE2 = strel('rectangle', [he, wi]);
+    
+        cl = imdilate(edges, EE);
+        cl = imfill(cl, 'holes');
+        cl = imerode(cl, EE2);
+    
+        if showSteps
+            figure, imshow(cl), title('close');
+        end
+    
+        CC = bwconncomp(cl);
+        S = regionprops(CC, 'BoundingBox', 'Area', 'Extent'); 
+
+        for k = 1:numel(S)
+            bb = S(k).BoundingBox;
+            x = max(bb(1) - 10, 0);
+            y = max(bb(2) - 10, 0);
+            w = min(bb(3) + 20, szx);
+            h = min(bb(4) + 20, szy);
+            if w < 10 || h < 10
+                continue;
+            end
+    
+            ar = w / h;
+            if ar < 1
+                ar = 1 / ar;
+            end
+    
+            areaRatio = S(k).Area / area;
+    
+            isWide = (ar > 1.7) && (ar <= 12);
+            isRect = S(k).Extent >= 0.15;
+            isReasonable = (areaRatio > 0.0005) & (areaRatio <= 0.25);
+            if isWide && isRect && isReasonable
+                candidates = [candidates; [x y w h]];
+            end
+        end
+    end
+end
+
+\end{verbatim}
+
+\begin{verbatim}
+
+function kept = nms(candidates, scores, iouThresh, containThresh)
+
+    if nargin < 4, containThresh = 0.75; end
+    if nargin < 3, iouThresh = 0.45; end
+
+    if isempty(candidates)
+        kept = zeros(0, 4);
+        return;
+    end
+
+    boxes  = double(candidates);
+    scores = double(scores);
+
+    % Ordenar por score descendente
+    [~, order] = sort(scores, 'descend');
+    boxes = boxes(order, :);
+
+    keep = true(size(boxes, 1), 1);
+
+    for i = 1:size(boxes,1)-1
+        if ~keep(i)
+            continue; 
+        end
+        for j = i+1:size(boxes,1)
+            if ~keep(j)
+                continue; 
+            end
+
+            [iou, r1, r2] = getOverlap(boxes(i,:), boxes(j,:));
+
+            if iou >= iouThresh || r1 >= containThresh || r2 >= containThresh
+                keep(j) = false;  % eliminar la de menor score
+            end
+        end
+    end
+    kept = boxes(keep, :);
+end
+
+
+function [iou, r1, r2] = getOverlap(A, B)
+    x1 = max(A(1), B(1));
+    y1 = max(A(2), B(2));
+    x2 = min(A(1)+A(3), B(1)+B(3));
+    y2 = min(A(2)+A(4), B(2)+B(4));
+
+    iw = max(0, x2 - x1);
+    ih = max(0, y2 - y1);
+    intersection = iw * ih;
+
+    aA = A(3) * A(4);
+    aB = B(3) * B(4);
+    union = aA + aB - intersection;
+
+    iou = intersection / union; 
+    r1  = intersection / aA;      % Fracción de A cubierta por B
+    r2  = intersection / aB;      % Fracción de B cubierta por A
+end
+
+\end{verbatim}
 
 \subsubsection{plate\_classifier}
 
+\begin{verbatim}
+
+function [prediction, score] = classify_roi(img)
+
+    % Load model
+    
+    persistent model;
+    
+    if isempty(model)
+    
+        data = load('plate_classifier.mat');
+    
+        model = data.model;
+    
+    end
+    
+    % Config
+    
+    imageSize = [64 128];
+    
+    % Features
+    
+    features = extract_plate_features(img, imageSize);
+    
+    % Prediction
+    
+    [prediction, scores] = predict(model, features);
+    
+    % Score
+    
+    score = scores(2);
+
+end
+    
+\end{verbatim}
+
+
+\begin{verbatim}
+
+function features = extract_plate_features(img, imageSize)
+    
+    % Grayscale
+    
+    if size(img,3) == 3
+        img = rgb2gray(img);
+    end
+
+    % Aspect and Area Ratio
+
+    [h, w] = size(img);
+    aspectRatio = w / h;
+    areaRatio = (h * w);
+    
+    % Resize
+    
+    img = imresize(img, imageSize);
+    img = im2uint8(im2double(img));
+    
+    % HOG FEATURES
+    
+    hog_feature = extractHOGFeatures(img,'CellSize', [8 8]);
+
+    features = [hog_feature, aspectRatio, areaRatio] ;
+
+end
+    
+\end{verbatim}
+
+\begin{verbatim}
+
+clear;
+clc;
+close all;
+
+%% Configuration
+
+positiveDir = 'dataset/positive';
+negativeDir = 'dataset/negative';
+
+imageSize = [64 128]; % height * width
+
+%% Load dataset
+
+positiveImages = dir(fullfile(positiveDir, '*.jpg'));
+negativeImages = dir(fullfile(negativeDir, '*.jpg'));
+
+numPos = length(positiveImages);
+numNeg = length(negativeImages);
+
+fprintf('Positives: %d\n', numPos);
+fprintf('Negatives: %d\n', numNeg);
+
+%% Features extraction
+
+features = [];
+labels = [];
+
+
+% Positives
+
+for i = 1:numPos
+
+    imgPath = fullfile(positiveDir, positiveImages(i).name);
+
+    img = imread(imgPath);
+
+    feat = extract_plate_features(img, imageSize);
+
+    features = [features; feat];
+
+    labels = [labels; 1];
+
+end
+
+
+% Negatives
+
+for i = 1:numNeg
+
+    imgPath = fullfile(negativeDir, negativeImages(i).name);
+
+    img = imread(imgPath);
+
+    feat = extract_plate_features(img, imageSize);
+
+    features = [features; feat];
+
+    labels = [labels; 0];
+
+end
+
+fprintf('Features extracted\n');
+size(features)
+
+%% Train / Test division
+
+rng(42);
+cv = cvpartition(labels, 'HoldOut', 0.2);
+
+Xtrain = features(training(cv), :);
+Ytrain = labels(training(cv));
+
+Xtest = features(test(cv), :);
+Ytest = labels(test(cv));
+
+%% Train classifier (SVM)
+
+fprintf('Training SVM...\n');
+
+model = fitcsvm(Xtrain, Ytrain, 'KernelFunction', 'linear', ...
+    'Standardize', true, 'ClassNames', [0 1], 'KernelScale','auto');
+
+fprintf('Model trained\n');
+
+%% Evaluation
+
+predictions = predict(model, Xtest);
+
+accuracy = sum(predictions == Ytest) / length(Ytest);
+
+fprintf('Accuracy: %.2f %%\n', accuracy * 100);
+
+%% Confusion matrix
+
+figure;
+confusionchart(Ytest, predictions);
+
+title('Confusion Matrix');
+
+%% Save model
+
+save('plate_classifier.mat', 'model');
+
+fprintf('Model saved in plate_classifier_model.mat\n');
+    
+\end{verbatim}
+
+
 \subsubsection{character\_segmentation}
+
+\begin{verbatim}
+
+
+function [alignedCrop, alignedBB] = alignPlate(im, boundingBox)
+    if size(im, 3) == 3
+        im = rgb2gray(im);
+    end
+    bw = imadjust(im);
+    bw = imbinarize(bw, "adaptive");
+    [szy, szx] = size(im);
+    alignedBB = boundingBox;
+    
+    CC = bwconncomp(bw);
+    S = regionprops(CC, 'Orientation', 'Area', 'Extent');
+    [~, idx] = max([S.Area]);
+    if ~isempty(S)
+        ang = S(idx).Orientation;
+        im = imrotate(im, -ang);
+        bw = imrotate(bw, -ang);
+    
+        CC = bwconncomp(bw);
+        S = regionprops(CC, 'BoundingBox', 'Area');
+        [~, idx] = max([S.Area]);
+        bb = S(idx).BoundingBox;
+    
+        [szyR, szxR] = size(im);
+        
+        off = 15;
+        bx = max(1, bb(1) - off);
+        by = max(1, bb(2) - off);
+        bwi = min(szxR - bx, bb(3) + (2 * off));
+        bhe = min(szyR - by, bb(4) + (2 * off));
+        bb2 = [bx, by, bwi, bhe];
+
+        im = imcrop(im, bb);
+
+        rot = [
+            bb(1), bb(2);
+            bb(1) + bb(3), bb(2);
+            bb(1) + bb(3), bb(2) + bb(4);
+            bb(1), bb(2) + bb(4);
+            ];
+    
+    
+        CO = [szx, szy] / 2;
+        CR = [szxR, szyR] / 2;
+        R = [cosd(ang), -sind(ang); sind(ang), cosd(ang)];
+        corners = zeros(4, 2);
+        for i = 1:4
+            pR = rot(i, :) - CR;
+            pO = pR * R;
+            corners(i, :) = pO + CO;
+        end
+    
+        alignedBB = corners + [boundingBox(1), boundingBox(2)] - 1;
+    
+    end
+    alignedCrop = im;
+    %figure, imshow(alignedCrop);
+end
+
+\end{verbatim}
+
+\begin{verbatim}
+
+
+function chars = segm(im)
+   
+    if size(im, 3) == 3
+        im = rgb2gray(im);
+    end
+
+    im = imgaussfilt(im, 0.5);
+    bw = ~imbinarize(im, 'adaptive', 'ForegroundPolarity', 'dark', 'Sensitivity', 0.5);
+
+    bw = imclearborder(bw); % Elimina objetos tocando los bordes
+    bw = bwareaopen(bw, 30); 
+
+    CC = bwconncomp(bw);
+
+    % Close para conectar numeros como 3, etc
+    se = strel('square', 2); 
+    bw = imclose(bw, se);
+
+    S = regionprops(CC, 'BoundingBox', 'Area', 'Extent');
+    
+    [imgHeight, ~] = size(bw);
+    blobs = [];
+
+    for k = 1:numel(S)
+        bb = S(k).BoundingBox;
+        x = bb(1); 
+        y = bb(2); 
+        w = bb(3); 
+        h = bb(4);
+
+        ar = w / h; % Aspect Ratio
+
+        cond_ar = (ar > 0.05 && ar < 1.5);
+
+        cond_h = (h > imgHeight * 0.35 && h < imgHeight * 0.95);
+
+        % Extent (Area del objeto / Area del Bounding Box)
+        cond_ext = (S(k).Extent > 0.12 && S(k).Extent < 1.0);
+
+        if cond_ar && cond_h && cond_ext
+            dfW = w * 0.10;
+            dfH = h * 0.05;
+            x2 = x - dfW;
+            y2 = y - dfH;
+            w2 = w + dfW * 2;
+            h2 = h + dfH * 2;
+            blobs = [blobs; [x2, y2, w2, h2]];
+        end
+    end
+
+    % Para descartar simbolos/banderas
+    if size(blobs, 1) >= 3
+        medH = median(blobs(:, 4));
+        keepMask = blobs(:, 4) > medH * 0.80;
+        blobs = blobs(keepMask, :);
+    end
+
+    if ~isempty(blobs)
+        chars = sortrows(blobs, 1);
+    else
+        chars = [];
+    end
+end
+
+\end{verbatim}
+
 
 \subsubsection{dataset\_generation}
 
+\begin{verbatim}
+
+% Intersection over union  
+% Checks how overlapped is the negative crop compared with the license
+% plate
+
+function iou = compute_iou(boxA, boxB)
+
+    xA = max(boxA(1), boxB(1));
+    yA = max(boxA(2), boxB(2));
+    
+    xB = min(boxA(1)+boxA(3), boxB(1)+boxB(3));
+    yB = min(boxA(2)+boxA(4), boxB(2)+boxB(4));
+    
+    interW = max(0, xB - xA);
+    interH = max(0, yB - yA);
+    
+    interArea = interW * interH;
+    
+    areaA = boxA(3) * boxA(4);
+    areaB = boxB(3) * boxB(4);
+    
+    unionArea = areaA + areaB - interArea;
+    
+    iou = interArea / unionArea;
+
+end
+    
+\end{verbatim}
+
+\begin{verbatim}
+
+clear;
+clc;
+close all;
+
+%% Configuration
+
+imagesDir = 'images';
+annotationsDir = 'annotations';
+
+positiveDir = 'dataset/positive';
+negativeDir = 'dataset/negative';
+
+mkdir(positiveDir);
+mkdir(negativeDir);
+
+padding = 0.05; % 5%
+
+negativePerImage = 5;
+
+%% Read Images
+
+imageFiles = dir(fullfile(imagesDir, '*.png'));
+
+positiveCount = 1;
+negativeCount = 1;
+
+%% Processing
+
+for i = 1:length(imageFiles)
+
+    fprintf('Processing image %d / %d\n', i, length(imageFiles));
+
+    % Read Image
+
+    imageName = imageFiles(i).name;
+
+    imgPath = fullfile(imagesDir, imageName);
+
+    img = imread(imgPath);
+
+    [imgH, imgW, ~] = size(img);
+
+    % Read XML
+
+    xmlName = replace(imageName, '.png', '.xml');
+
+    xmlPath = fullfile(annotationsDir, xmlName);
+
+    xmlDoc = xmlread(xmlPath);
+
+    objects = xmlDoc.getElementsByTagName('object');
+
+    if objects.getLength == 0
+        continue;
+    end
+
+    % Read only license plate
+
+    obj = objects.item(0);
+
+    bbox = obj.getElementsByTagName('bndbox').item(0);
+
+    xmin = str2double(bbox.getElementsByTagName('xmin').item(0).getTextContent);
+
+    ymin = str2double(bbox.getElementsByTagName('ymin').item(0).getTextContent);
+
+    xmax = str2double(bbox.getElementsByTagName('xmax').item(0).getTextContent);
+
+    ymax = str2double(bbox.getElementsByTagName('ymax').item(0).getTextContent);
+
+    % Add padding
+
+    bw = xmax - xmin;
+    bh = ymax - ymin;
+
+    padX = round(bw * padding);
+    padY = round(bh * padding);
+
+    xminP = max(1, xmin - padX);
+    yminP = max(1, ymin - padY);
+
+    xmaxP = min(imgW, xmax + padX);
+    ymaxP = min(imgH, ymax + padY);
+
+    % Positive crop
+
+    positiveCrop = img(yminP:ymaxP, xminP:xmaxP, :);
+
+    positiveName = sprintf('pos_%05d.jpg', positiveCount);
+
+    positiveCrop = im2uint8(mat2gray(positiveCrop));
+
+    imwrite(positiveCrop, fullfile(positiveDir, positiveName));
+
+    positiveCount = positiveCount + 1;
+
+    % Generate negatives (no plate)
+
+    for n = 1:negativePerImage
+
+        validCrop = false;
+
+        attempts = 0;
+
+        while ~validCrop && attempts < 100
+
+            attempts = attempts + 1;
+
+            % Similar size to the license plate
+
+            cropW = bw;
+            cropH = bh;
+
+            rx = randi([1, imgW - cropW]);
+            ry = randi([1, imgH - cropH]);
+
+            % IOU
+
+            iou = compute_iou([rx ry cropW cropH], [xmin ymin bw bh]);
+
+            if iou < 0.1
+
+                negativeCrop = img(ry:ry+cropH, rx:rx+cropW, :);
+
+                negativeName = sprintf('neg_%05d.jpg', negativeCount);
+
+                negativeCrop = im2uint8(mat2gray(negativeCrop));
+
+                imwrite(negativeCrop, fullfile(negativeDir, negativeName));
+
+                negativeCount = negativeCount + 1;
+
+                validCrop = true;
+
+            end
+
+        end
+
+    end
+
+end
+
+fprintf('Dataset successfully generated\n');
+    
+\end{verbatim}
+
+
 \subsubsection{ocr\_classifier}
+
+\begin{verbatim}
+
+function label = classify_character(img)
+
+    % Load model
+    
+    persistent svmModel5;
+    
+    if isempty(svmModel5)
+    
+        data = load('ocr_model5.mat');
+    
+        svmModel5 = data.svmModel5;
+    
+    end
+
+    % Config 
+
+    imgSize = [32 32];
+    
+    % Extract Features
+
+    features = extract_character_features(img, imgSize);
+    
+    % Classify
+
+    label = predict(svmModel5, features);
+ 
+end
+    
+\end{verbatim}
+
+\begin{verbatim}
+
+
+function features = extract_character_features(img, imageSize)
+    
+    if size(img,3) == 3
+                img = rgb2gray(img);
+    end
+    img = imresize(img, imageSize);
+    img = im2single(img);
+
+    bin = imbinarize(img);
+    se = strel('disk', 1);
+    bin = imclose(bin, se);
+    bin = bwareaopen(bin, 5);
+    
+    % 1. HOG 
+    hog_feature = extractHOGFeatures(img, 'CellSize', [4 4]);
+    
+    % 2. Density global
+    density = sum(bin(:)) / numel(bin);
+    
+    % 3. Número de agujeros
+    cc = bwconncomp(~bin);
+    numHoles = cc.NumObjects;
+    
+    % 4. Perfiles de proyección completos (16+16)
+    targetLen = 16;
+    hProfile = sum(bin, 1);
+    vProfile = sum(bin, 2);
+    hProf_norm = imresize(hProfile / (max(hProfile) + eps), [1, targetLen]);
+    vProf_norm = imresize(vProfile'/ (max(vProfile)  + eps), [1, targetLen]);
+    projFeatures = [hProf_norm, vProf_norm];
+    
+    % 5. Zoning 4x4 (densidad por zona)
+    zoningF = zoningFeatures(bin, 4, 4);
+
+    % 6. Zoning asimétrico 6x3 
+    zoningF2 = zoningFeatures(bin, 6, 3);
+
+    % 7. Crossing numbers por fila
+    crossings = zeros(1, targetLen);
+    binResized = imresize(bin, [targetLen, targetLen]) > 0.5;
+    for row = 1:targetLen
+        line = binResized(row, :);
+        crossings(row) = sum(diff(line) == 1);
+    end
+    crossings = crossings / (max(crossings) + eps);
+    
+    features = [
+        hog_feature, ...
+        density, ...
+        numHoles, ...
+        projFeatures, ...
+        zoningF, ...
+        zoningF2, ...
+        crossings
+        ];
+end
+
+
+function zf = zoningFeatures(bin, rows, cols)
+    [H, W] = size(bin);
+    zf = zeros(1, rows * cols);
+    idx = 1;
+    for r = 1:rows
+        for c = 1:cols
+            rStart = round((r-1)*H/rows) + 1;
+            rEnd   = round(r*H/rows);
+            cStart = round((c-1)*W/cols) + 1;
+            cEnd   = round(c*W/cols);
+            zone = bin(rStart:rEnd, cStart:cEnd);
+            zf(idx) = sum(zone(:)) / numel(zone);
+            idx = idx + 1;
+        end
+    end
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%function features = extract_character_features(img, imageSize)
+
+    % Preprocess
+ 
+    %if size(img,3) == 3
+     %   img = rgb2gray(img);
+    %end
+    
+   % img = imresize(img, imageSize);
+   % img = im2single(img);
+    
+  
+    % BINARIZATION (para shape features)
+   % bin = imbinarize(img);
+    
+  
+    % HOG FEATURES (base)
+  %  hog_feature = extractHOGFeatures(img, 'CellSize', [8 8]);
+    
+ 
+    % 1. SHAPE FEATURES (muy importantes para 8 vs B, 1 vs I)
+    %density = sum(bin(:)) / numel(bin);
+    
+    % agujeros (topología básica)
+   % cc = bwconncomp(~bin);
+   % numHoles = cc.NumObjects;
+    
+    % =========================================================
+    % 2. PROJECTION FEATURES (OCR clásico potente)
+    % =========================================================
+    
+   % hProfile = sum(bin, 1);
+   % vProfile = sum(bin, 2);
+    
+   % projFeatures = [
+   %     mean(hProfile), std(hProfile), ...
+   %     mean(vProfile), std(vProfile)
+    %    ];
+    
+    % =========================================================
+    % 3. GRADIENT FEATURES (complemento a HOG)
+    % =========================================================
+    
+   % [Gx, Gy] = imgradientxy(img);
+   % [Gmag, Gdir] = imgradient(Gx, Gy);
+    
+   % gradFeatures = [
+     %   mean(Gmag(:)), ...
+     %   std(Gmag(:))
+     %   ];
+    
+   % dirHist = histcounts(Gdir(:), 8);
+   % dirHist = dirHist / (sum(dirHist) + eps);
+    
+    % =========================================================
+    % FINAL FEATURE VECTOR
+    % =========================================================
+   % features = [
+  %      hog_feature, ...
+  %      density, ...
+  %      numHoles, ...
+  %      projFeatures, ...
+   %     gradFeatures, ...
+  %      dirHist
+   %     ];
+
+%end
+
+%function features = extract_character_features(img, imageSize)
+
+    % Grayscale
+    
+    %if size(img,3) == 3
+        %img = rgb2gray(img);
+    %end
+    
+    % Aspect and Area Ratio
+    
+    %[h, w] = size(img);
+    %aspectRatio = w / h;
+    %areaRatio = (h * w);
+    
+    % Connected components
+    
+    %bw = imbinarize(img);
+    %cc = bwconncomp(bw);
+    %numComponents = cc.NumObjects;
+    
+    % Resize
+    
+    %img = imresize(img, imageSize);
+    %img = im2uint8(im2double(img));
+    
+    % HOG FEATURES
+    
+    %hog_feature = extractHOGFeatures(img,'CellSize', [8 8]);
+    
+    %features = [hog_feature];
+
+%end
+    
+\end{verbatim}
+
+\begin{verbatim}
+
+    
+function [plateText, charLabels] = recognize_plate(aligned, blobs)
+    
+    plateText = "";
+    charLabels = strings(size(blobs,1),1);
+    
+    for k = 1:size(blobs,1)
+    
+        bb = blobs(k,:);
+    
+        charImg = imcrop(aligned, bb);
+    
+        predictedChar = classify_character(charImg);
+        
+        charLabels(k) = string(predictedChar);
+    
+        plateText = plateText + charLabels(k);
+    
+    end
+end
+    
+\end{verbatim}
+
+\begin{verbatim}
+
+clear;
+clc;
+close all;
+
+%% Configuration
+
+datasetPath = fullfile(pwd, "Datasets/charactersDataset2/training_data");
+
+imds = imageDatastore(datasetPath, ...
+    "IncludeSubfolders", true, ...
+    "LabelSource", "foldernames");
+
+[imdsTrain, imdsTest] = splitEachLabel(imds, 0.8, "randomized");
+
+
+%% Features Extraction and Model Train
+
+numTrain = numel(imdsTrain.Files);
+numTest  = numel(imdsTest.Files);
+
+XTrain = [];
+YTrain = imdsTrain.Labels;
+
+XTest  = [];
+YTest  = imdsTest.Labels;
+
+imgSize = [32 32];
+
+
+% TRAIN FEATURES
+
+for i = 1:numTrain
+
+    img = readimage(imdsTrain, i);
+
+    feat = extract_character_features(img, imgSize);
+
+    XTrain = [XTrain; feat];
+
+end
+
+
+% TEST FEATURES 
+
+for i = 1:numTest
+
+    img = readimage(imdsTest, i);
+
+    feat = extract_character_features(img, imgSize);
+
+    XTest = [XTest; feat];
+
+end
+
+
+%% Train model 
+
+svmModel5 = fitcecoc(XTrain, YTrain);
+
+
+%% Model Evaluation
+
+YPred = predict(svmModel5, XTest);
+
+accuracy = sum(YPred == YTest) / numel(YTest);
+
+fprintf("Accuracy: %.2f%%\n", accuracy * 100);
+
+figure;
+confusionchart(YTest, YPred);
+title("Confusion Matrix - OCR SVM");
+
+save("ocr_model5.mat", "svmModel5", "imgSize");
+    
+\end{verbatim}
