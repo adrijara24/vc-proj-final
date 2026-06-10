@@ -1,1 +1,1 @@
-test_056.jpg	165	166	73	16	RK3OOAG
+test_056.jpg	165	166	73	16	RK300AG

@@ -25,9 +25,8 @@ fprintf('Negatives: %d\n', numNeg);
 features = [];
 labels = [];
 
-% ---------------------------
+
 % Positives
-% ---------------------------
 
 for i = 1:numPos
 
@@ -43,9 +42,8 @@ for i = 1:numPos
 
 end
 
-% ---------------------------
+
 % Negatives
-% ---------------------------
 
 for i = 1:numNeg
 

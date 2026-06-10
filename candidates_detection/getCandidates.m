@@ -1,3 +1,4 @@
+
 function candidates = getCandidates(im, showSteps)
     im = rgb2gray(im);
     im = imadjust(im);
@@ -7,18 +8,11 @@ function candidates = getCandidates(im, showSteps)
     end
     candidates = [];
     
-    %thresh = graythresh(im);
-    %bw = im2bw(im, thresh);         % Buscando, me sale que es mejor usar imbinarize pq tiene un parámetro ('adaptive') que funciona mejor con escenas iluminadas/no iluminadas https://www.mathworks.com/help/images/ref/imbinarize.html
     area = numel(im);
     edges = edge(im,'sobel', 'vertical');
     if showSteps
         figure, imshow(edges), title('edges');
     end
-    %sizes = [1, 2, 4];
-    %sizes = [1, 5 ; 2, 10 ; 3, 15];
-    %sizes = [ceil(0.003 * szy), ceil(0.009 * szx);];
-    %sizes = [ceil(0.003 * szy), ceil(0.009 * szx);];
-    %sizes = [ceil(0.010 * szy), ceil(0.030 * szx);];
     sizes = [
         1, 5;
         2, 12;
@@ -28,8 +22,6 @@ function candidates = getCandidates(im, showSteps)
         ceil(0.010 * szy), ceil(0.030 * szx);
         ];
     for si = 1:size(sizes, 1)
-        %EE = strel('diamond', si);
-        %EE2 = strel('diamond', si*4);
         he = sizes(si, 1);
         wi = sizes(si, 2);
         EE = strel('rectangle', [he, wi]);
@@ -44,7 +36,7 @@ function candidates = getCandidates(im, showSteps)
         end
     
         CC = bwconncomp(cl);
-        S = regionprops(CC, 'BoundingBox', 'Area', 'Extent'); % Solidity, Eccentricity, Perimeter
+        S = regionprops(CC, 'BoundingBox', 'Area', 'Extent'); 
 
         for k = 1:numel(S)
             bb = S(k).BoundingBox;

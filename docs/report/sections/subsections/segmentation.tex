@@ -1,0 +1,85 @@
+
+\subsection{Segmentació de Caràcters}
+
+\subsubsection{Funcions Implementades}
+Un cop la matrícula ha estat retallada i alineada, la funció \texttt{segm} s'encarrega d'aïllar i extreure cadascun dels caràcters presents a la imatge per al seu posterior reconeixement. El procés es divideix en les següents fases:
+\begin{itemize}
+    \item \textbf{Preparació de la imatge}: La imatge es converteix a escala de grisos, s'hi aplica un filtre gaussià per difuminar el soroll, es binaritza invertint el resultat.
+    \item \textbf{Neteja del fons}: S'eliminen tots els objectes que toquen els marges de la imatge i s'esborren els blobs d'àrea minúscula.
+    \item \textbf{Filtratge de components connexos}: Obtenim els components connexos de la imatge i apliquem un filtre sobre les regions. Les condicions estan documentades a \textbf{Geometria Estricta}.
+    \item \textbf{Mecanisme d'homogeneïtat}: Si s'han detectat tres o més candidats validats, es calcula la mediana de les seves alçades. Tots aquells candidats on l'alçada sigui inferior al 80\% de la mediana, són descartats.
+    \item \textbf{Ordenació final}: Ordenem els caràcters que han passat el filtratge per posició d'esquerra a dreta, per tindre l'ordre de la matrícula i facilitar la següent fase.
+\end{itemize}
+\subsubsection{Decisions de Disseny}
+
+L'etapa de segmentació requereix un equilibri molt precís: ha de ser prou estricta per no passar blobs de brutícia o soroll, logotips, escuts, etc al classificador, però prou permissiu per no descartar lletres en matrícules lleugerament tapades o deteriorades.
+
+\textbf{Estratègia de binarització:}
+Usem un filtre gaussià amb $\sigma=0.5$ prèviament per eliminar soroll i poder realitzar la binarització adaptativa sense problemes. Un cop binaritzat, netegem vores i eliminem petits sorolls.
+\textbf{Geometria Estricta:}
+Els valors límit per els blobs obtinguts amb \texttt{regionprops} són:
+\begin{itemize}
+    \item \textbf{Aspect Ratio}: 0.05 fins a 1.5 per incorporar caràcters anòmals.
+    \item \textbf{Alçada}: D'un 35\% a un 95\%, en les matrícules ja retallades, és difícil que un caràcter sigui més baix que el límit inferior.
+    \item \textbf{Extent}: 0.12 fins a 1.0. Els caràcters no són blocs sòlids, però tenen una densitat mínima, afegim 0.12 com a límit inferior per caràcters com l'\textbf{L}.
+\end{itemize}
+\textbf{Filtratge relatiu per Mediana:}
+Tot i el filtratge geomètric, hi han alguns blobs corresponents a figures com la franja de la UE, escuts, etc que passen el filtre. Per pal·liar-ho, vàrem incorporar un filtre de context: es comparen les alçades de tots els candidats respecte a la seva pròpia mediana. Com que en una matrícula els caràcters solen ser pràcticament de la mateixa mida, això elimina la major part dels falsos positius.
+
+\
+
+\textbf{Alternatives Descartades:}
+Durant el desenvolupament de la segmentació, es van explorar tècniques alternatives que finalment es van descartar pels motius exposats a la taula \ref{tab:segment_alternatives}.
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|p{3cm}|p{4cm}|p{7cm}|}
+        \hline
+        \textbf{Mètode} & \textbf{Motivació} & \textbf{Motiu de descart} \\
+        \hline
+        Template Matching & Buscar proporcions exactes de caràcters dins de la regió binaritzada. & Incapacitat d'adaptar-se a les lletres deformades pel soroll i baixes resolucions.\\
+        \hline
+        Mètode actual amb aspect ratio <0.95 & Restringir l'amplada dels caràcter seguint l'estàndard europeu & Al no ser totes les matrícules del mateix país, en alguns casos hi havien caràcters més llargs que alts.\\
+        \hline
+        Projecció Vertical i Horitzontal & Segons la nostra recerca, és un mètode usat en OCR per separar caràcters. & Les matrícules amb lleugera rotació, o perspectiva feien que els caràcters no es detectessin correctament.\\
+        \hline
+    \end{tabular}
+    \caption{Comparativa de mètodes de segmentació avaluats prèviament.}
+    \label{tab:segment_alternatives}
+\end{table}
+
+\textbf{Exemple d'errors de segmentació:}
+En la figura \ref{fig:mat-w053011} podem veure un clàssic error de segmentació en el nostre programa, l'1 final no s'ha segmentat correctament ja que, al binaritzar, queda com un únic blob juntament amb la franja de color negre per l'alineament de la placa.
+Per corregir-ho, vàrem sospesar dues opcions
+\begin{itemize}
+    \item Ampliar els marges de la placa passada a la segmentació
+    \item Al girar, fer servir una màscara i assignar el valor 1 (blanc) als píxels afegits per l'alineament.
+\end{itemize}
+Totes dues solucions van fer que baixés el percentatge de matrícules correctes i vam optar per no solucionar-ho i assumir l'error.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/mat-W053011.png}
+    \caption{Caràcter mal retallat}
+    \label{fig:mat-w053011}
+\end{figure}
+
+Per les següents figures, podem veure el dilema que hem tingut: Aplicar una solució, perjudica un altre imatge.
+En la figura \ref{fig:mat-rk576ah} podem veure com el caràcter \textbf{5} es fusiona amb la part baixa de la matrícula. Si apliquessim un \textit{close} per eliminar l'espai que uneix el \textbf{5} amb la banda, ens trobaríem que, amb imatges com la de la figura \ref{fig:mat-wsq3021} hi han caràcters que es trenquen, com el cas de la \textbf{W}, el caràcter es trenca, i queden dos blobs independents, dels cuals un s'ha descartat. \\
+Amb aquest problema en ma, hem decidit no aplicar l'operador morfològic, ja que ens ha donat millor resultats sobre el ground truth.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/mat-RK576AH.png}
+    \caption{Caràcter fusionat amb vores}
+    \label{fig:mat-rk576ah}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/mat-WSQ3021.png}
+    \caption{Caràcter parcialment segmentat}
+    \label{fig:mat-wsq3021}
+\end{figure}
+
+
+

@@ -1,2 +1,0 @@
-MIN_WIDTH = 5
-MAX_WIDTH = 500

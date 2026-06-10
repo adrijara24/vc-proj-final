@@ -1,0 +1,63 @@
+
+\subsection{Neteja de Candidats Finals}
+
+Després de l'etapa de classificació de ROIs, el sistema genera habitualment múltiples candidats que corresponen a una mateixa matrícula.
+
+\
+
+Aquesta redundància provoca dos problemes principals:
+\begin{itemize}
+    \item Increment innecessari del cost computacional en les fases posteriors (alineació i OCR).
+    \item Possibles errors de reconeixement, ja que diferents crops de la mateixa matrícula poden produir resultats lleugerament diferents.
+\end{itemize}
+
+Per solucionar aquest problema s'ha implementat un procés de \textit{Non-Maximum Suppression} (NMS), amb l'objectiu de conservar únicament el candidat més representatiu de cada regió de matrícula.
+
+\subsubsection{Funcions Implementades}
+
+Les funcions principals implementades en aquest mòdul són:
+\begin{itemize}
+     \item \texttt{getOverlap}: funció encarregada de calcular el grau de solapament entre dues \textit{bounding boxes}. A partir de dues regions definides com $A = [x, y, w, h]$ i $B = [x, y, w, h]$, es calcula IoU, el percentatge de la caixa A coberta per B i el percentatge de la caixa B coberta per A. 
+    A partir d'aquesta intersecció es deriven tres mètriques:
+    \item \texttt{nms}: funció que implementa l'algorisme NMS, ordenant les caixes segons el seu score de classificació i eliminant les que presenten un solapament elevat amb altres caixes de major score.
+\end{itemize}
+
+\subsubsection{Funcionament del NMS}
+
+L'algorisme NMS funciona ordenant inicialment totes les bounding boxes segons la seva probabilitat de ser matrícula (score retornat pel classificador SVM). A partir d'aquesta ordenació, es procedeix de la següent manera:
+
+\begin{enumerate}
+    \item Es selecciona la bounding box amb major score com a referència.
+    \item Es comparen totes les altres caixes amb aquesta utilitzant mètriques de solapament.
+    \item Les caixes que presenten un solapament elevat són eliminades.
+    \item Es repeteix el procés amb la següent caixa no eliminada.
+\end{enumerate}
+
+\subsubsection{Mètriques de solapament i Criteris de Supressió}
+
+Per determinar quan dues caixes representen el mateix objecte s'han utilitzat tres criteris:
+
+\begin{itemize}
+    \item \textbf{Intersection over Union (IoU)}: mesura la relació entre l'àrea d'intersecció i la unió de dues caixes. Si $\text{IoU} \geq 0.45$, es considera que les dues regions representen el mateix objecte.
+
+    \item \textbf{Containment ratio}: es calcula la proporció d'una caixa continguda dins de l'altra. Aquest criteri permet detectar casos en què una ROI està gairebé completament dins d'una altra.
+
+    \item \textbf{Simetria de conteniment}: es considera tant la cobertura de la caixa A sobre B com de B sobre A, amb un llindar de 0.75.
+\end{itemize}
+
+Si es compleix qualsevol de les condicions següents, una de les dues caixes es descarta:
+
+\begin{itemize}
+    \item $\text{IoU} \geq 0.45$
+    \item $\text{Containment ratio} \geq 0.75$
+\end{itemize}
+
+En aquests casos, es manté sempre la caixa amb major score de classificació, eliminant les altres per evitar redundància.
+
+\subsubsection{Decisions de Disseny i Resultats}
+
+Inicialment, aquesta neteja de candidats es va implementar d'una forma més simple, sense seguir el criteri de supració de no màxims. En aquest primer enfocament, es van eliminar totes les caixes que presentaven un solapament superior a un cert llindar. Aquest mètode no va resultar ser suficient ja que en molts casos es seguien conservant múltiples caixes i no garantitzava que es mantingués la caixa amb major score. Per aquest motiu es va investigar i optar per implementar l'algorisme de NMS.
+
+L'aplicació de NMS ha permès reduir significativament el nombre de candidats per imatge, eliminant duplicats de la mateixa matrícula i millorant l'estabilitat del sistema. A més, permet la detecció de múltiples matrícules en la mateixa imatge, ja que només es suprimeixen les caixes que representen el mateix objecte. 
+
+

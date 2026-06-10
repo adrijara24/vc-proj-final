@@ -12,12 +12,6 @@ function features = extract_plate_features(img, imageSize)
     [h, w] = size(img);
     aspectRatio = w / h;
     areaRatio = (h * w);
-
-    % Connected components
-
-    %bw = imbinarize(img);
-    %cc = bwconncomp(bw);
-    %numComponents = cc.NumObjects;
     
     % Resize
     

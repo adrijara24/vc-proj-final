@@ -1,6 +1,6 @@
-
+    
 function [plateText, charLabels] = recognize_plate(aligned, blobs)
-
+    
     plateText = "";
     charLabels = strings(size(blobs,1),1);
     
@@ -11,7 +11,7 @@ function [plateText, charLabels] = recognize_plate(aligned, blobs)
         charImg = imcrop(aligned, bb);
     
         predictedChar = classify_character(charImg);
-    
+        
         charLabels(k) = string(predictedChar);
     
         plateText = plateText + charLabels(k);

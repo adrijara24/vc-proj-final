@@ -3,13 +3,13 @@ function label = classify_character(img)
 
     % Load model
     
-    persistent svmModel;
+    persistent svmModel5;
     
-    if isempty(svmModel)
+    if isempty(svmModel5)
     
-        data = load('ocr_model.mat');
+        data = load('ocr_model5.mat');
     
-        svmModel= data.svmModel;
+        svmModel5 = data.svmModel5;
     
     end
 
@@ -23,6 +23,6 @@ function label = classify_character(img)
     
     % Classify
 
-    label = predict(svmModel, features);
-
+    label = predict(svmModel5, features);
+ 
 end

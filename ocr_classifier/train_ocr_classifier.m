@@ -4,15 +4,13 @@ close all;
 
 %% Configuration
 
-datasetPath = fullfile(pwd, "Datasets/Characters_Dataset");
+datasetPath = fullfile(pwd, "Datasets/charactersDataset2/training_data");
 
 imds = imageDatastore(datasetPath, ...
     "IncludeSubfolders", true, ...
     "LabelSource", "foldernames");
 
 [imdsTrain, imdsTest] = splitEachLabel(imds, 0.8, "randomized");
-
-imgSize = [32 32];
 
 
 %% Features Extraction and Model Train
@@ -28,9 +26,9 @@ YTest  = imdsTest.Labels;
 
 imgSize = [32 32];
 
-% -------------------------
+
 % TRAIN FEATURES
-% -------------------------
+
 for i = 1:numTrain
 
     img = readimage(imdsTrain, i);
@@ -41,9 +39,9 @@ for i = 1:numTrain
 
 end
 
-% -------------------------
+
 % TEST FEATURES 
-% -------------------------
+
 for i = 1:numTest
 
     img = readimage(imdsTest, i);
@@ -57,12 +55,12 @@ end
 
 %% Train model 
 
-svmModel = fitcecoc(XTrain, YTrain);
+svmModel5 = fitcecoc(XTrain, YTrain);
 
 
 %% Model Evaluation
 
-YPred = predict(svmModel, XTest);
+YPred = predict(svmModel5, XTest);
 
 accuracy = sum(YPred == YTest) / numel(YTest);
 
@@ -72,4 +70,4 @@ figure;
 confusionchart(YTest, YPred);
 title("Confusion Matrix - OCR SVM");
 
-save("ocr_model.mat", "svmModel", "imgSize");
+save("ocr_model5.mat", "svmModel5", "imgSize");

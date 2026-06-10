@@ -5,8 +5,6 @@
 
 function iou = compute_iou(boxA, boxB)
 
-    % box = [x y w h]
-    
     xA = max(boxA(1), boxB(1));
     yA = max(boxA(2), boxB(2));
     
