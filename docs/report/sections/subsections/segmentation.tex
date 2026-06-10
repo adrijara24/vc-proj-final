@@ -25,10 +25,13 @@ Els valors límit per els blobs obtinguts amb \texttt{regionprops} són:
 \end{itemize}
 \textbf{Filtratge relatiu per Mediana:}
 Tot i el filtratge geomètric, hi han alguns blobs corresponents a figures com la franja de la UE, escuts, etc que passen el filtre. Per pal·liar-ho, vàrem incorporar un filtre de context: es comparen les alçades de tots els candidats respecte a la seva pròpia mediana. Com que en una matrícula els caràcters solen ser pràcticament de la mateixa mida, això elimina la major part dels falsos positius.
-\textbf{Alternatives Descartades:}
-Durant el desenvolupament de la segmentació, es van explorar tècniques alternatives que finalment es van descartar pels motius exposats a la taula \ref{tab:preproc_SEGM}.
 
-\begin{table}[h]
+\
+
+\textbf{Alternatives Descartades:}
+Durant el desenvolupament de la segmentació, es van explorar tècniques alternatives que finalment es van descartar pels motius exposats a la taula \ref{tab:segment_alternatives}.
+
+\begin{table}[H]
     \centering
     \begin{tabular}{|p{3cm}|p{4cm}|p{7cm}|}
         \hline
@@ -55,7 +58,7 @@ Per corregir-ho, vàrem sospesar dues opcions
 Totes dues solucions van fer que baixés el percentatge de matrícules correctes i vam optar per no solucionar-ho i assumir l'error.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{images/mat-W053011.png}
+    \includegraphics[width=0.8\textwidth]{images/mat-W053011.png}
     \caption{Caràcter mal retallat}
     \label{fig:mat-w053011}
 \end{figure}
@@ -63,16 +66,17 @@ Totes dues solucions van fer que baixés el percentatge de matrícules correctes
 Per les següents figures, podem veure el dilema que hem tingut: Aplicar una solució, perjudica un altre imatge.
 En la figura \ref{fig:mat-rk576ah} podem veure com el caràcter \textbf{5} es fusiona amb la part baixa de la matrícula. Si apliquessim un \textit{close} per eliminar l'espai que uneix el \textbf{5} amb la banda, ens trobaríem que, amb imatges com la de la figura \ref{fig:mat-wsq3021} hi han caràcters que es trenquen, com el cas de la \textbf{W}, el caràcter es trenca, i queden dos blobs independents, dels cuals un s'ha descartat. \\
 Amb aquest problema en ma, hem decidit no aplicar l'operador morfològic, ja que ens ha donat millor resultats sobre el ground truth.
+
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{images/mat-RK576AH.png}
+    \includegraphics[width=0.8\textwidth]{images/mat-RK576AH.png}
     \caption{Caràcter fusionat amb vores}
     \label{fig:mat-rk576ah}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{images/mat-WSQ3021.png}
+    \includegraphics[width=0.8\textwidth]{images/mat-WSQ3021.png}
     \caption{Caràcter parcialment segmentat}
     \label{fig:mat-wsq3021}
 \end{figure}

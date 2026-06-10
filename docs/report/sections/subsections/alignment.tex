@@ -15,7 +15,10 @@ L'objectiu d'aquesta etapa és corregir les distorsions de perspectiva i inclina
 
 Per aquesta raó, hem escollit la solució amb components connexos amb \texttt{regionprops} doncs és un métode robust per trobar la inclinació i dades de la matrícula. En la majoria de casos, la matrícula és el \textit{blob} més gran de la ROI.
 
-\textbf{Alternatives Descartades}: Durant la fase de disseny, es van avaluar, implementar i descartar l'altraestratègies tradicionals per alinear les matrícules. La taula \ref{preproc_ALIGN} resumeix els motius pels quals es va abandonar a favor de l'enfocament actual.
+\textbf{Alternatives Descartades}: Durant la fase de disseny, es van avaluar, implementar i descartar un altre estratègia tradicional per alinear les matrícules. 
 
-Transformada de Hough \\
-Mitjançant Canny i la transformada de Hough, es va crear un mètode similar al actual, però els resultats no eren els esperats, i algunes matrícules no tenien la rotació correcta amb un error inassumible. Per aquest motiu, vam descartar aquesta implementació a favor de la actual.
+\begin{itemize}
+    \item \textbf{Transformada de Hough}:
+    Mitjançant Canny i la transformada de Hough, es va crear un mètode similar al actual, però els resultats no eren els esperats, i algunes matrícules no tenien la rotació correcta amb un error inassumible. Per aquest motiu, vam descartar aquesta implementació a favor de la actual.
+   
+\end{itemize}

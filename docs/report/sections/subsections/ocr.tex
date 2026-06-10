@@ -62,11 +62,8 @@ Durant el procés d'implementació del classificador OCR es van provar diverses 
 
 \begin{itemize}
     \item \textbf{Augmentar la mida de les imatges}: es va considerar redimensionar les imatges a una mida més gran (per exemple, 64x64) per capturar més detalls, però es va descartar aquesta opció ja que va incrementar significativament el temps d'entrenament i no va aportar millores substancials en el rendiment del model.
-    
     \item \textbf{Dataset amb caràcters de matrícules reals}: com s'ha mencionat anteriorment, es va provar un dataset amb imatges de caràcters obtinguts directament de matrícules reals, però es va descartar degut a la falta de varietat en les tipografies i a la presència de rotacions i deformacions que no eren representatives del nostre pipeline.
-    \item 
-    \item \textbf{Augmentar la mida del datset}: es va considerar fusionar diversos datasets per obtenir una major varietat de caràcters i tipografies, però no va resultar efectiu. 
-    \item 
+    \item \textbf{Augmentar la mida del datset}: es va considerar fusionar diversos datasets per obtenir una major varietat de caràcters i tipografies, però no va resultar efectiu.  
     \item \textbf{Finestra de 8x8 en HOG}: es va provar utilitzar una finestra de 8x8 píxels per a l'extracció de característiques HOG, però es va observar que aquesta configuració no capturava suficients detalls dels caràcters.    
 \end{itemize}
 
